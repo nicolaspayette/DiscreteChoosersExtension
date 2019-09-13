@@ -6,11 +6,11 @@ netLogoClassManager := "net.cohesyslab.dc.DiscreteChoosersExtension"
 
 netLogoZipSources := false
 
-netLogoVersion := "6.0.4"
+netLogoVersion := "6.1.0"
 
 netLogoTarget := org.nlogo.build.NetLogoExtension.directoryTarget(baseDirectory.value / "dc")
 
-version := "1.0.0-SNAPSHOT"
+version := "0.0.0-SNAPSHOT"
 
 scalaVersion := "2.12.8"
 
