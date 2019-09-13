@@ -18,25 +18,6 @@ import org.nlogo.core.Syntax.ListType
 import org.nlogo.core.Syntax.RepeatableType
 import org.nlogo.core.Syntax.ReporterType
 
-object SimpleEpsilonGreedyBanditPrim extends Reporter {
-
-  override def getSyntax: Syntax = reporterSyntax(
-    right = List(NumberType, NumberType),
-    ret = WildcardType
-  )
-
-  override def report(args: Array[Argument], context: Context): AnyRef = {
-    val numberOfOptions = args(0).getIntValue
-    val epsilon = args(1).getDoubleValue
-    val randomSeed = context.getRNG.nextLong()
-    val optionsAvailable = Array.range(0, numberOfOptions).map(_.toLogoObject)
-    new ChooserObject(
-      new EpsilonGreedyBandit(SimpleRewardFunction, optionsAvailable, randomSeed, epsilon)
-    )
-  }
-
-}
-
 object EpsilonGreedyBanditPrim extends Reporter {
 
   override def getSyntax: Syntax = reporterSyntax(
