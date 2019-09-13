@@ -4,8 +4,8 @@ import io.github.carrknight.Chooser
 import io.github.carrknight.Observation
 import org.nlogo.core.ExtensionObject
 
-class ChooserObject(val chooser: Chooser[AnyRef, AnyRef, AnyRef])
-  extends Chooser[AnyRef, AnyRef, AnyRef] with ExtensionObject {
+class ChooserObject(val chooser: Chooser[AnyRef, AnyRef, Null])
+  extends Chooser[AnyRef, AnyRef, Null] with ExtensionObject {
 
   override def getExtensionName: String = "dc"
   override def getNLTypeName: String = chooser.getClass.getSimpleName
@@ -15,7 +15,7 @@ class ChooserObject(val chooser: Chooser[AnyRef, AnyRef, AnyRef])
 
   override def getLastChoice: AnyRef = chooser.getLastChoice
   override def updateAndChoose(
-    observation: Observation[AnyRef, AnyRef, AnyRef],
-    additionalObservations: Observation[AnyRef, AnyRef, AnyRef]*): AnyRef =
+    observation: Observation[AnyRef, AnyRef, Null],
+    additionalObservations: Observation[AnyRef, AnyRef, Null]*): AnyRef =
     chooser.updateAndChoose(observation, additionalObservations: _*)
 }

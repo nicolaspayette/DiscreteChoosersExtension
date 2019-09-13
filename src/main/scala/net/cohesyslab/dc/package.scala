@@ -46,15 +46,20 @@ package object dc {
     }
   }
 
-  object SimpleRewardFunction extends RewardFunction[AnyRef, AnyRef, AnyRef] {
+  /**
+   * This is the simplest possible reward function, which only makes sure that the
+   * result passed to it is a number and returns its value as a double.
+   */
+  object SimpleRewardFunction extends RewardFunction[AnyRef, AnyRef, Null] {
     override def extractUtility(
       optionTaken: AnyRef,
       experimentResult: AnyRef,
-      contextObject: AnyRef
-    ): Double = experimentResult match {
-      case n: Number => n.doubleValue()
-      case obj => throw new ExtensionException("not a number: " + Dump.logoObject(obj))
-    }
+      contextObject: Null
+    ): Double =
+      experimentResult match {
+        case n: Number => n.doubleValue()
+        case obj => throw new ExtensionException("not a number: " + Dump.logoObject(obj))
+      }
   }
 
 }
