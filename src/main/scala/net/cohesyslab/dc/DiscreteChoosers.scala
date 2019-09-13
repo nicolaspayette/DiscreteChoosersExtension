@@ -12,7 +12,7 @@ import org.nlogo.core.Syntax
 import org.nlogo.core.Syntax.WildcardType
 import org.nlogo.core.Syntax.commandSyntax
 import org.nlogo.core.Syntax.reporterSyntax
-import org.nlogo.core.Syntax.ReadableType
+import org.nlogo.core.Syntax.NumberType
 
 class DiscreteChoosersExtension extends DefaultClassManager {
 
@@ -47,17 +47,18 @@ object LastChoicePrim extends Reporter {
 object AddObservationPrim extends Command {
 
   override def getSyntax: Syntax = commandSyntax(
-    right = List(WildcardType | ReadableType),
-    defaultOption = Option(3),
-    minimumOption = Option(3)
+    right = List(
+      WildcardType, // the chooser object
+      WildcardType,  // the choice made
+      NumberType // the result observed
+    )
   )
 
   override def perform(args: Array[Argument], context: Context): Unit = {
     val chooser = args(0).get.as[ChooserObject]
     val choiceMade = args(1).get
-    val resultObserved = args(2).get
-    val observationContext = args.lift(3).map(_.get).orNull
-    chooser.updateAndChoose(new Observation(choiceMade, resultObserved, observationContext))
+    val resultObserved = args(2).getDoubleValue
+    chooser.updateAndChoose(new Observation(choiceMade, resultObserved, null))
   }
 }
 
