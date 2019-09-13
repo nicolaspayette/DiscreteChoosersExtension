@@ -22,7 +22,11 @@ class DiscreteChoosersExtension extends DefaultClassManager {
     LastChoicePrim,
     EpsilonGreedyBanditPrim,
     GetEpsilonPrim,
-    SetEpsilonPrim
+    SetEpsilonPrim,
+    SoftmaxBanditPrim,
+    GetTemperaturePrim,
+    SetTemperaturePrim,
+    GetBeliefsPrim
   ).foreach(prim => primManager.addPrimitive(makePrimName(prim), prim))
 
   def makePrimName(obj: Any): String =
@@ -57,7 +61,7 @@ object AddObservationPrim extends Command {
   override def perform(args: Array[Argument], context: Context): Unit = {
     val chooser = args(0).get.as[ChooserObject]
     val choiceMade = args(1).get
-    val resultObserved = args(2).getDoubleValue
+    val resultObserved = args(2).get
     chooser.updateAndChoose(new Observation(choiceMade, resultObserved, null))
   }
 }
