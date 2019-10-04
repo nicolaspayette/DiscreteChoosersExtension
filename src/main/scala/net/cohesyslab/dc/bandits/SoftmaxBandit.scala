@@ -1,13 +1,16 @@
-package net.cohesyslab.dc
+package net.cohesyslab.dc.bandits
 
 import java.util.SplittableRandom
 
 import io.github.carrknight.bandits.SoftmaxBanditAlgorithm
+import net.cohesyslab.dc.ChooserObject
+import net.cohesyslab.dc.RichArgument
+import net.cohesyslab.dc.SimpleRewardFunction
 import org.nlogo.api.Argument
 import org.nlogo.api.Command
 import org.nlogo.api.Context
 import org.nlogo.api.Reporter
-import org.nlogo.api.ScalaConversions.RichAny
+import org.nlogo.api.ScalaConversions._
 import org.nlogo.core.Syntax
 import org.nlogo.core.Syntax.AgentsetType
 import org.nlogo.core.Syntax.ListType
@@ -18,10 +21,10 @@ import org.nlogo.core.Syntax.reporterSyntax
 
 object SoftmaxBanditPrim extends Reporter {
 
+  val DefaultTemperatureValue = 1.0
+
   override def getSyntax: Syntax = reporterSyntax(
-    right = List(
-      ListType | AgentsetType // the choices
-    ),
+    right = List(ListType | AgentsetType), // the choices
     ret = WildcardType
   )
 
@@ -29,10 +32,10 @@ object SoftmaxBanditPrim extends Reporter {
     new ChooserObject(
       new SoftmaxBanditAlgorithm(
         SimpleRewardFunction,
-        args(0).getOptionsArray,
+        args(0).getOptionsArray(context.getRNG),
         Double.MaxValue,
         new SplittableRandom(context.getRNG.nextLong()),
-        1,
+        DefaultTemperatureValue,
         x => x
       )
     )

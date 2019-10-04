@@ -1,11 +1,14 @@
-package net.cohesyslab.dc
+package net.cohesyslab.dc.bandits
 
 import io.github.carrknight.bandits.EpsilonGreedyBandit
+import net.cohesyslab.dc.ChooserObject
+import net.cohesyslab.dc.RichArgument
+import net.cohesyslab.dc.SimpleRewardFunction
 import org.nlogo.api.Argument
 import org.nlogo.api.Command
 import org.nlogo.api.Context
 import org.nlogo.api.Reporter
-import org.nlogo.api.ScalaConversions.RichAny
+import org.nlogo.api.ScalaConversions._
 import org.nlogo.core.Syntax
 import org.nlogo.core.Syntax.AgentsetType
 import org.nlogo.core.Syntax.ListType
@@ -16,11 +19,10 @@ import org.nlogo.core.Syntax.reporterSyntax
 
 object EpsilonGreedyBanditPrim extends Reporter {
 
+  val DefaultEpsilonValue = 0.2
+
   override def getSyntax: Syntax = reporterSyntax(
-    right = List(
-      ListType | AgentsetType, // the choices
-      NumberType // epsilon
-    ),
+    right = List(ListType | AgentsetType), // the choices
     ret = WildcardType
   )
 
@@ -28,9 +30,9 @@ object EpsilonGreedyBanditPrim extends Reporter {
     new ChooserObject(
       new EpsilonGreedyBandit(
         SimpleRewardFunction,
-        args(0).getOptionsArray,
+        args(0).getOptionsArray(context.getRNG),
         context.getRNG.nextLong(), // random seed
-        args(1).getDoubleValue // epsilon
+        DefaultEpsilonValue // default value for epsilon
       )
     )
 
