@@ -4,8 +4,8 @@ import java.util.SplittableRandom
 
 import io.github.carrknight.bandits.SoftmaxBanditAlgorithm
 import net.cohesyslab.dc.ChooserObject
+import net.cohesyslab.dc.IdentityRewardFunction
 import net.cohesyslab.dc.RichArgument
-import net.cohesyslab.dc.SimpleRewardFunction
 import org.nlogo.api.Argument
 import org.nlogo.api.Command
 import org.nlogo.api.Context
@@ -31,7 +31,7 @@ object SoftmaxBanditPrim extends Reporter {
   override def report(args: Array[Argument], context: Context): AnyRef =
     new ChooserObject(
       new SoftmaxBanditAlgorithm(
-        SimpleRewardFunction,
+        IdentityRewardFunction,
         args(0).getOptionsArray(context.getRNG),
         Double.MaxValue,
         new SplittableRandom(context.getRNG.nextLong()),

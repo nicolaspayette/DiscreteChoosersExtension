@@ -31,7 +31,7 @@ object ObservePrim extends Command {
     )
   )
   override def perform(args: Array[Argument], context: Context): Unit =
-    args(0).getChooser.observe(args(1).get, args(2).get)
+    args(0).getChooser.observe(args(1).get, args(2).getDoubleValue)
 }
 
 object ExpectationsPrim extends Reporter {

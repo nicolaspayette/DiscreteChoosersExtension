@@ -67,20 +67,9 @@ package object dc {
     }
   }
 
-  /**
-   * This is the simplest possible reward function, which only makes sure that the
-   * result passed to it is a number and returns its value as a double.
-   */
-  object SimpleRewardFunction extends RewardFunction[AnyRef, AnyRef, Null] {
-    override def extractUtility(
-      optionTaken: AnyRef,
-      experimentResult: AnyRef,
-      contextObject: Null
-    ): Double =
-      experimentResult match {
-        case n: Number => n.doubleValue()
-        case obj => throw new ExtensionException("not a number: " + Dump.logoObject(obj))
-      }
+  /** A simple reward function returning the non-transformed reward */
+  object IdentityRewardFunction extends RewardFunction[AnyRef, Double, Null] {
+    override def extractUtility(o: AnyRef, r: Double, c: Null): Double = r
   }
 
 }

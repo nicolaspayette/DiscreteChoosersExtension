@@ -6,7 +6,7 @@ import net.cohesyslab.dc.bandits.GetTemperaturePrim
 import net.cohesyslab.dc.bandits.SetEpsilonPrim
 import net.cohesyslab.dc.bandits.SetTemperaturePrim
 import net.cohesyslab.dc.bandits.SoftmaxBanditPrim
-import net.cohesyslab.dc.bandits.UCBBanditBanditPrim
+import net.cohesyslab.dc.bandits.UCBBanditPrim
 
 object DiscreteChoosersExtension {
   val name = "dc"
@@ -31,5 +31,5 @@ class DiscreteChoosersExtension extends ExtensionClassManager(
   SetTemperaturePrim,
 
   // UCB bandit:
-  UCBBanditBanditPrim
+  UCBBanditPrim
 )

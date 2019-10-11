@@ -2,8 +2,8 @@ package net.cohesyslab.dc.bandits
 
 import io.github.carrknight.bandits.EpsilonGreedyBandit
 import net.cohesyslab.dc.ChooserObject
+import net.cohesyslab.dc.IdentityRewardFunction
 import net.cohesyslab.dc.RichArgument
-import net.cohesyslab.dc.SimpleRewardFunction
 import org.nlogo.api.Argument
 import org.nlogo.api.Command
 import org.nlogo.api.Context
@@ -29,7 +29,7 @@ object EpsilonGreedyBanditPrim extends Reporter {
   override def report(args: Array[Argument], context: Context): AnyRef =
     new ChooserObject(
       new EpsilonGreedyBandit(
-        SimpleRewardFunction,
+        IdentityRewardFunction,
         args(0).getOptionsArray(context.getRNG),
         context.getRNG.nextLong(), // random seed
         DefaultEpsilonValue // default value for epsilon
