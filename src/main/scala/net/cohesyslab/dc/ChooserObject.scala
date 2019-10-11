@@ -15,13 +15,17 @@ case class Expectation(option: AnyRef, value: java.lang.Double) {
 
 class ChooserObject(val chooser: Chooser[AnyRef, Double, Null]) extends ExtensionObject {
 
+  private[this] var _lastObservation: Option[Observation[AnyRef, Double, Null]] = None
+
   override def getExtensionName: String = DiscreteChoosersExtension.name
   override def getNLTypeName: String = chooser.getClass.getSimpleName
   override def recursivelyEqual(obj: AnyRef): Boolean = eq(obj)
   override def dump(readable: Boolean, exporting: Boolean, reference: Boolean): String = hashCode.toHexString
 
-  def observe(choiceMade: AnyRef, resultObserved: Double): Unit =
-    chooser.updateAndChoose(new Observation(choiceMade, resultObserved, null))
+  def observe(choiceMade: AnyRef, resultObserved: Double): Unit = {
+    _lastObservation = Some(new Observation(choiceMade, resultObserved, null))
+    _lastObservation.foreach(chooser.updateAndChoose(_))
+  }
 
   def choice: AnyRef = chooser.updateAndChoose(null)
 
@@ -45,5 +49,7 @@ class ChooserObject(val chooser: Chooser[AnyRef, Double, Null]) extends Extensio
     case bandit: AbstractBanditAlgorithm[AnyRef, _, Null] =>
       bandit.getOptionsAvailable.entrySet.asScala.toVector.sortBy(_.getValue).map(_.getKey)
   }
+
+  def lastObservation: Option[Observation[AnyRef, Double, Null]] = _lastObservation
 
 }

@@ -6,6 +6,7 @@ import org.nlogo.api.Context
 import org.nlogo.api.Reporter
 import org.nlogo.api.ScalaConversions.RichAny
 import org.nlogo.api.ScalaConversions.RichSeq
+import org.nlogo.core.Nobody
 import org.nlogo.core.Syntax
 import org.nlogo.core.Syntax.ListType
 import org.nlogo.core.Syntax.NumberType
@@ -56,4 +57,12 @@ object BestOptionPrim extends Reporter {
   override def getSyntax: Syntax = reporterSyntax(right = List(WildcardType), ret = WildcardType)
   override def report(args: Array[Argument], context: Context): AnyRef =
     args(0).getChooser.bestOption(context.getRNG).toLogoObject
+}
+
+object LastObservationPrim extends Reporter {
+  override def getSyntax: Syntax = reporterSyntax(right = List(WildcardType), ret = ListType)
+  override def report(args: Array[Argument], context: Context): AnyRef =
+    args(0).getChooser.lastObservation
+      .map(obs => Seq(obs.getChoiceMade, obs.getResultObserved).toLogoList)
+      .getOrElse(Nobody)
 }
