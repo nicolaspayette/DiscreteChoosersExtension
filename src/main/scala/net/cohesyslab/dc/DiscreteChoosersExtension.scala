@@ -9,6 +9,11 @@ import net.cohesyslab.dc.bandits.SigmaPrim
 import net.cohesyslab.dc.bandits.SoftmaxChooserPrim
 import net.cohesyslab.dc.bandits.TemperaturePrim
 import net.cohesyslab.dc.bandits.Ucb1ChooserPrim
+import net.cohesyslab.dc.imitators.ExplorationProbabilityPrim
+import net.cohesyslab.dc.imitators.ExploreExploitImitateChooserPrim
+import net.cohesyslab.dc.imitators.ImitationProbabilityPrim
+import net.cohesyslab.dc.imitators.SetExplorationProbabilityPrim
+import net.cohesyslab.dc.imitators.SetImitationProbabilityPrim
 
 object DiscreteChoosersExtension {
   val name = "dc"
@@ -37,4 +42,11 @@ class DiscreteChoosersExtension extends ExtensionClassManager(
   Ucb1ChooserPrim,
   SigmaPrim,
   SetSigmaPrim,
+
+  // Explore-exploit-imitate
+  ExploreExploitImitateChooserPrim,
+  ExplorationProbabilityPrim,
+  SetExplorationProbabilityPrim,
+  ImitationProbabilityPrim,
+  SetImitationProbabilityPrim
 )
