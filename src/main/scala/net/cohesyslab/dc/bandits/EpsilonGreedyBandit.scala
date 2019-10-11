@@ -3,18 +3,16 @@ package net.cohesyslab.dc.bandits
 import io.github.carrknight.bandits.EpsilonGreedyBandit
 import net.cohesyslab.dc.ChooserObject
 import net.cohesyslab.dc.IdentityRewardFunction
+import net.cohesyslab.dc.NumberGetter
+import net.cohesyslab.dc.NumberSetter
 import net.cohesyslab.dc.RichArgument
 import org.nlogo.api.Argument
-import org.nlogo.api.Command
 import org.nlogo.api.Context
 import org.nlogo.api.Reporter
-import org.nlogo.api.ScalaConversions._
 import org.nlogo.core.Syntax
 import org.nlogo.core.Syntax.AgentsetType
 import org.nlogo.core.Syntax.ListType
-import org.nlogo.core.Syntax.NumberType
 import org.nlogo.core.Syntax.WildcardType
-import org.nlogo.core.Syntax.commandSyntax
 import org.nlogo.core.Syntax.reporterSyntax
 
 object EpsilonGreedyBanditPrim extends Reporter {
@@ -38,16 +36,6 @@ object EpsilonGreedyBanditPrim extends Reporter {
 
 }
 
-object GetEpsilonPrim extends Reporter {
-  override def getSyntax: Syntax = reporterSyntax(right = List(WildcardType), ret = NumberType)
+object GetEpsilonPrim extends NumberGetter[EpsilonGreedyBandit[_, _, _]](_.getEpsilon)
 
-  override def report(args: Array[Argument], context: Context): AnyRef =
-    args(0).getChooserAs[EpsilonGreedyBandit[_, _, _]].getEpsilon.toLogoObject
-}
-
-object SetEpsilonPrim extends Command {
-  override def getSyntax: Syntax = commandSyntax(List(WildcardType, NumberType))
-
-  override def perform(args: Array[Argument], context: Context): Unit =
-    args(0).getChooserAs[EpsilonGreedyBandit[_, _, _]].setEpsilon(args(1).getDoubleValue)
-}
+object SetEpsilonPrim extends NumberSetter[EpsilonGreedyBandit[_, _, _]](_.setEpsilon(_))

@@ -1,13 +1,23 @@
 package net.cohesyslab
 
+import io.github.carrknight.Chooser
 import io.github.carrknight.utils.RewardFunction
 import org.nlogo.agent.AgentSet
 import org.nlogo.api.Agent
 import org.nlogo.api.Argument
+import org.nlogo.api.Command
+import org.nlogo.api.Context
 import org.nlogo.api.Dump
 import org.nlogo.api.ExtensionException
 import org.nlogo.api.MersenneTwisterFast
+import org.nlogo.api.Reporter
+import org.nlogo.api.ScalaConversions._
 import org.nlogo.core.LogoList
+import org.nlogo.core.Syntax
+import org.nlogo.core.Syntax.NumberType
+import org.nlogo.core.Syntax.WildcardType
+import org.nlogo.core.Syntax.commandSyntax
+import org.nlogo.core.Syntax.reporterSyntax
 
 import scala.collection.mutable
 import scala.reflect.ClassTag
@@ -18,6 +28,20 @@ package object dc {
   /** A simple assertion that throws an ExtensionException if the condition is not met */
   def check(condition: Boolean, message: => String): Unit =
     if (!condition) throw new ExtensionException(message)
+
+  class NumberGetter[T <: Chooser[_, _, _] : ClassTag](get: T => Any) extends Reporter {
+    override def getSyntax: Syntax =
+      reporterSyntax(right = List(WildcardType), ret = NumberType)
+    override def report(args: Array[Argument], context: Context): AnyRef =
+      get(args(0).getChooserAs[T]).toLogoObject
+  }
+
+  class NumberSetter[T <: Chooser[_, _, _] : ClassTag](set: (T, Double) => Unit) extends Command {
+    override def getSyntax: Syntax =
+      commandSyntax(List(WildcardType, NumberType))
+    override def perform(args: Array[Argument], context: Context): Unit =
+      set(args(0).getChooserAs[T], args(1).getDoubleValue)
+  }
 
   implicit class RichAnyRef(anyRef: AnyRef) {
 
@@ -41,7 +65,7 @@ package object dc {
 
     def getChooser: ChooserObject = arg.get.as[ChooserObject]
 
-    def getChooserAs[T: ClassTag]: T = arg.get.as[ChooserObject].chooser.as[T]
+    def getChooserAs[T <: Chooser[_, _, _] : ClassTag]: T = arg.get.as[ChooserObject].chooser.as[T]
 
     def getOptionsArray(rng: MersenneTwisterFast): Array[AnyRef] = arg.get match {
       case agentSet: AgentSet => agentSet.toOptionsArray(rng)
