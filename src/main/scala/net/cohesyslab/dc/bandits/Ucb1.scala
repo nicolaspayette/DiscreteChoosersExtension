@@ -19,7 +19,7 @@ import org.nlogo.core.Syntax.ListType
 import org.nlogo.core.Syntax.WildcardType
 import org.nlogo.core.Syntax.reporterSyntax
 
-object UCBBanditPrim extends Reporter {
+object Ucb1ChooserPrim extends Reporter {
 
   val DefaultSigma = 1.0
   override def getSyntax: Syntax = reporterSyntax(

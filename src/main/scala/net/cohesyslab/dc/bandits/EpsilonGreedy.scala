@@ -15,7 +15,7 @@ import org.nlogo.core.Syntax.ListType
 import org.nlogo.core.Syntax.WildcardType
 import org.nlogo.core.Syntax.reporterSyntax
 
-object EpsilonGreedyBanditPrim extends Reporter {
+object EpsilonGreedyChooserPrim extends Reporter {
 
   val DefaultEpsilonValue = 0.2
 

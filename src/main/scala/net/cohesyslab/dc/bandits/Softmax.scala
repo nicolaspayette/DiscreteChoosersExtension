@@ -17,7 +17,7 @@ import org.nlogo.core.Syntax.ListType
 import org.nlogo.core.Syntax.WildcardType
 import org.nlogo.core.Syntax.reporterSyntax
 
-object SoftmaxBanditPrim extends Reporter {
+object SoftmaxChooserPrim extends Reporter {
 
   val DefaultTemperatureValue = 1.0
 
