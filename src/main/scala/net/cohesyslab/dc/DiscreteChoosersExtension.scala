@@ -1,8 +1,8 @@
 package net.cohesyslab.dc
 
 import net.cohesyslab.dc.bandits.EpsilonGreedyBanditPrim
-import net.cohesyslab.dc.bandits.GetEpsilonPrim
-import net.cohesyslab.dc.bandits.GetTemperaturePrim
+import net.cohesyslab.dc.bandits.EpsilonPrim
+import net.cohesyslab.dc.bandits.TemperaturePrim
 import net.cohesyslab.dc.bandits.SetEpsilonPrim
 import net.cohesyslab.dc.bandits.SetTemperaturePrim
 import net.cohesyslab.dc.bandits.SoftmaxBanditPrim
@@ -22,12 +22,12 @@ class DiscreteChoosersExtension extends ExtensionClassManager(
 
   // Epsilon-greedy bandit:
   EpsilonGreedyBanditPrim,
-  GetEpsilonPrim,
+  EpsilonPrim,
   SetEpsilonPrim,
 
   // SoftMax bandit:
   SoftmaxBanditPrim,
-  GetTemperaturePrim,
+  TemperaturePrim,
   SetTemperaturePrim,
 
   // UCB bandit:

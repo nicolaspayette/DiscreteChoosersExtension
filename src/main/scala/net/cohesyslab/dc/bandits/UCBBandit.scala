@@ -54,6 +54,6 @@ object UCBBanditPrim extends Reporter {
 
 }
 
-object GetSigmaPrim extends NumberGetter[UCBBanditAlgorithm[_, _, _]](_.getSigma)
+object SigmaPrim extends NumberGetter[UCBBanditAlgorithm[_, _, _]](_.getSigma)
 
 object SetSigmaPrim extends NumberSetter[UCBBanditAlgorithm[_, _, _]](_.setSigma(_))

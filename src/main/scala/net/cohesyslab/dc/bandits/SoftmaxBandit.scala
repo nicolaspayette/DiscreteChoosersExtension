@@ -39,6 +39,6 @@ object SoftmaxBanditPrim extends Reporter {
     )
 }
 
-object GetTemperaturePrim extends NumberGetter[SoftmaxBanditAlgorithm[_, _, _]](_.getTemperature)
+object TemperaturePrim extends NumberGetter[SoftmaxBanditAlgorithm[_, _, _]](_.getTemperature)
 
 object SetTemperaturePrim extends NumberSetter[SoftmaxBanditAlgorithm[_, _, _]](_.setTemperature(_))

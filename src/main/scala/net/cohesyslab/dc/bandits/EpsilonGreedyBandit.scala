@@ -36,6 +36,6 @@ object EpsilonGreedyBanditPrim extends Reporter {
 
 }
 
-object GetEpsilonPrim extends NumberGetter[EpsilonGreedyBandit[_, _, _]](_.getEpsilon)
+object EpsilonPrim extends NumberGetter[EpsilonGreedyBandit[_, _, _]](_.getEpsilon)
 
 object SetEpsilonPrim extends NumberSetter[EpsilonGreedyBandit[_, _, _]](_.setEpsilon(_))
