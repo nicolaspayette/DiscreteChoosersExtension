@@ -3,7 +3,9 @@ package net.cohesyslab.dc
 import net.cohesyslab.dc.bandits.EpsilonGreedyChooserPrim
 import net.cohesyslab.dc.bandits.EpsilonPrim
 import net.cohesyslab.dc.bandits.SetEpsilonPrim
+import net.cohesyslab.dc.bandits.SetSigmaPrim
 import net.cohesyslab.dc.bandits.SetTemperaturePrim
+import net.cohesyslab.dc.bandits.SigmaPrim
 import net.cohesyslab.dc.bandits.SoftmaxChooserPrim
 import net.cohesyslab.dc.bandits.TemperaturePrim
 import net.cohesyslab.dc.bandits.Ucb1ChooserPrim
@@ -32,5 +34,7 @@ class DiscreteChoosersExtension extends ExtensionClassManager(
   SetTemperaturePrim,
 
   // UCB bandit:
-  Ucb1ChooserPrim
+  Ucb1ChooserPrim,
+  SigmaPrim,
+  SetSigmaPrim,
 )
