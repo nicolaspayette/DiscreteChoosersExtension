@@ -15,6 +15,10 @@ import scala.reflect.classTag
 
 package object dc {
 
+  /** A simple assertion that throws an ExtensionException if the condition is not met */
+  def check(condition: Boolean, message: => String): Unit =
+    if (!condition) throw new ExtensionException(message)
+
   implicit class RichAnyRef(anyRef: AnyRef) {
 
     /** Provides a shorthand casting mechanism that raises an appropriate extension exception */
@@ -26,6 +30,11 @@ package object dc {
             classTag[T].runtimeClass.getSimpleName
         )
     }
+  }
+
+  implicit class RichDouble(val d: Double) extends AnyVal {
+    def inRange(lowerBound: Double, upperBound: Double) =
+      lowerBound <= d && d <= upperBound;
   }
 
   implicit class RichArgument(arg: Argument) {
@@ -53,13 +62,12 @@ package object dc {
 
   implicit class RichLogoList(logoList: LogoList) {
     def toOptionsArray: Array[AnyRef] = {
-      if (logoList.isEmpty) throw new ExtensionException("A chooser cannot be created with an empty list of options.")
+      check(!logoList.isEmpty, "A chooser cannot be created with an empty list of options.")
       logoList.toArray
     }
   }
 
-
-    /**
+  /**
    * This is the simplest possible reward function, which only makes sure that the
    * result passed to it is a number and returns its value as a double.
    */
