@@ -2,10 +2,10 @@ package net.cohesyslab.dc.bandits
 
 import io.github.carrknight.bandits.EpsilonGreedyBandit
 import net.cohesyslab.dc.ChooserObject
-import net.cohesyslab.dc.IdentityRewardFunction
-import net.cohesyslab.dc.NumberGetter
-import net.cohesyslab.dc.NumberSetter
-import net.cohesyslab.dc.RichArgument
+import net.cohesyslab.dc.utils.DoubleSetter
+import net.cohesyslab.dc.utils.Getter
+import net.cohesyslab.dc.utils.IdentityRewardFunction
+import net.cohesyslab.dc.utils.RichArgument
 import org.nlogo.api.Argument
 import org.nlogo.api.Context
 import org.nlogo.api.Reporter
@@ -36,6 +36,10 @@ object EpsilonGreedyChooserPrim extends Reporter {
 
 }
 
-object EpsilonPrim extends NumberGetter[EpsilonGreedyBandit[_, _, _]](_.getEpsilon)
+object EpsilonPrim extends Getter[EpsilonGreedyBandit[_, _, _]] {
+  override def get(chooser: EpsilonGreedyBandit[_, _, _]): Any = chooser.getEpsilon
+}
 
-object SetEpsilonPrim extends NumberSetter[EpsilonGreedyBandit[_, _, _]](_.setEpsilon(_))
+object SetEpsilonPrim extends DoubleSetter[EpsilonGreedyBandit[_, _, _]] {
+  override def set(chooser: EpsilonGreedyBandit[_, _, _], value: Double): Unit = chooser.setEpsilon(value)
+}

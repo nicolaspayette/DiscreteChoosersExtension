@@ -1,5 +1,6 @@
 package net.cohesyslab.dc
 
+import net.cohesyslab.dc.utils.RichArgument
 import org.nlogo.api.Argument
 import org.nlogo.api.Command
 import org.nlogo.api.Context

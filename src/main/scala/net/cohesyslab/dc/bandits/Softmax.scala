@@ -4,10 +4,10 @@ import java.util.SplittableRandom
 
 import io.github.carrknight.bandits.SoftmaxBanditAlgorithm
 import net.cohesyslab.dc.ChooserObject
-import net.cohesyslab.dc.IdentityRewardFunction
-import net.cohesyslab.dc.NumberGetter
-import net.cohesyslab.dc.NumberSetter
-import net.cohesyslab.dc.RichArgument
+import net.cohesyslab.dc.utils.DoubleSetter
+import net.cohesyslab.dc.utils.Getter
+import net.cohesyslab.dc.utils.IdentityRewardFunction
+import net.cohesyslab.dc.utils.RichArgument
 import org.nlogo.api.Argument
 import org.nlogo.api.Context
 import org.nlogo.api.Reporter
@@ -39,6 +39,10 @@ object SoftmaxChooserPrim extends Reporter {
     )
 }
 
-object TemperaturePrim extends NumberGetter[SoftmaxBanditAlgorithm[_, _, _]](_.getTemperature)
+object TemperaturePrim extends Getter[SoftmaxBanditAlgorithm[_, _, _]] {
+  override def get(chooser: SoftmaxBanditAlgorithm[_, _, _]): Any = chooser.getTemperature
+}
 
-object SetTemperaturePrim extends NumberSetter[SoftmaxBanditAlgorithm[_, _, _]](_.setTemperature(_))
+object SetTemperaturePrim extends DoubleSetter[SoftmaxBanditAlgorithm[_, _, _]] {
+  override def set(chooser: SoftmaxBanditAlgorithm[_, _, _], value: Double): Unit = chooser.setTemperature(value)
+}

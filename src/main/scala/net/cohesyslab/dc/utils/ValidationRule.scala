@@ -1,4 +1,4 @@
-package net.cohesyslab.dc
+package net.cohesyslab.dc.utils
 
 import org.nlogo.api.ExtensionException
 

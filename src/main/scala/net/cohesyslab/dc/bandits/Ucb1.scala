@@ -4,12 +4,12 @@ import java.util.SplittableRandom
 
 import io.github.carrknight.bandits.UCBBanditAlgorithm
 import net.cohesyslab.dc.ChooserObject
-import net.cohesyslab.dc.IdentityRewardFunction
-import net.cohesyslab.dc.InRange
-import net.cohesyslab.dc.NumberGetter
-import net.cohesyslab.dc.NumberSetter
-import net.cohesyslab.dc.RichArgument
-import net.cohesyslab.dc.ValidationRule
+import net.cohesyslab.dc.utils.DoubleSetter
+import net.cohesyslab.dc.utils.Getter
+import net.cohesyslab.dc.utils.IdentityRewardFunction
+import net.cohesyslab.dc.utils.InRange
+import net.cohesyslab.dc.utils.RichArgument
+import net.cohesyslab.dc.utils.ValidationRule
 import org.nlogo.api.Argument
 import org.nlogo.api.Context
 import org.nlogo.api.Reporter
@@ -43,10 +43,15 @@ object Ucb1ChooserPrim extends Reporter {
       DefaultSigma
     )
   ) {
-    override val observedResultValidationRule: ValidationRule[Double] = InRange(0.0, 1.0)
+    override val observedResultValidationRule: ValidationRule[Double] = InRange(0, 1)
   }
+
 }
 
-object SigmaPrim extends NumberGetter[UCBBanditAlgorithm[_, _, _]](_.getSigma)
+object SigmaPrim extends Getter[UCBBanditAlgorithm[_, _, _]] {
+  override def get(chooser: UCBBanditAlgorithm[_, _, _]): Any = chooser.getSigma
+}
 
-object SetSigmaPrim extends NumberSetter[UCBBanditAlgorithm[_, _, _]](_.setSigma(_))
+object SetSigmaPrim extends DoubleSetter[UCBBanditAlgorithm[_, _, _]] {
+  override def set(chooser: UCBBanditAlgorithm[_, _, _], value: Double): Unit = chooser.setSigma(value)
+}

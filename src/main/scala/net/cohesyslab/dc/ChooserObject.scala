@@ -3,6 +3,8 @@ package net.cohesyslab.dc
 import io.github.carrknight.Chooser
 import io.github.carrknight.Observation
 import io.github.carrknight.bandits.AbstractBanditAlgorithm
+import net.cohesyslab.dc.utils.AlwaysValid
+import net.cohesyslab.dc.utils.ValidationRule
 import org.nlogo.api.MersenneTwisterFast
 import org.nlogo.core.ExtensionObject
 import org.nlogo.core.LogoList

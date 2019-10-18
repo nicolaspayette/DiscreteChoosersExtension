@@ -1,44 +1,20 @@
-package net.cohesyslab
+package net.cohesyslab.dc
 
 import io.github.carrknight.Chooser
 import io.github.carrknight.utils.RewardFunction
 import org.nlogo.agent.AgentSet
 import org.nlogo.api.Agent
 import org.nlogo.api.Argument
-import org.nlogo.api.Command
-import org.nlogo.api.Context
 import org.nlogo.api.Dump
 import org.nlogo.api.ExtensionException
 import org.nlogo.api.MersenneTwisterFast
-import org.nlogo.api.Reporter
-import org.nlogo.api.ScalaConversions._
 import org.nlogo.core.LogoList
-import org.nlogo.core.Syntax
-import org.nlogo.core.Syntax.NumberType
-import org.nlogo.core.Syntax.WildcardType
-import org.nlogo.core.Syntax.commandSyntax
-import org.nlogo.core.Syntax.reporterSyntax
 
 import scala.collection.mutable
 import scala.reflect.ClassTag
 import scala.reflect.classTag
 
-package object dc {
-
-  class NumberGetter[T <: Chooser[_, _, _] : ClassTag](get: T => Any) extends Reporter {
-    override def getSyntax: Syntax =
-      reporterSyntax(right = List(WildcardType), ret = NumberType)
-    override def report(args: Array[Argument], context: Context): AnyRef =
-      get(args(0).getChooserAs[T]).toLogoObject
-  }
-
-  class NumberSetter[T <: Chooser[_, _, _] : ClassTag](set: (T, Double) => Unit) extends Command {
-    val validationRule: ValidationRule[Double] = AlwaysValid()
-    override def getSyntax: Syntax =
-      commandSyntax(List(WildcardType, NumberType))
-    override def perform(args: Array[Argument], context: Context): Unit =
-      set(args(0).getChooserAs[T], args(1).getDoubleValue)
-  }
+package object utils {
 
   implicit class RichAnyRef(anyRef: AnyRef) {
 
@@ -51,11 +27,6 @@ package object dc {
             classTag[T].runtimeClass.getSimpleName
         )
     }
-  }
-
-  implicit class RichDouble(val d: Double) extends AnyVal {
-    def inRange(lowerBound: Double, upperBound: Double) =
-      lowerBound <= d && d <= upperBound;
   }
 
   implicit class RichArgument(arg: Argument) {
@@ -83,7 +54,7 @@ package object dc {
 
   implicit class RichLogoList(logoList: LogoList) {
     def toOptionsArray: Array[AnyRef] = {
-      check(!logoList.isEmpty, "A chooser cannot be created with an empty list of options.")
+      if (logoList.isEmpty) throw new ExtensionException("A chooser cannot be created with an empty list of options.")
       logoList.toArray
     }
   }
