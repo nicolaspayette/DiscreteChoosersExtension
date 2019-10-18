@@ -22,8 +22,11 @@ class ChooserObject(val chooser: Chooser[AnyRef, Double, Null]) extends Extensio
   override def recursivelyEqual(obj: AnyRef): Boolean = eq(obj)
   override def dump(readable: Boolean, exporting: Boolean, reference: Boolean): String = hashCode.toHexString
 
-  def observe(choiceMade: AnyRef, resultObserved: Double): Unit = {
-    _lastObservation = Some(new Observation(choiceMade, resultObserved, null))
+  val observedResultValidationRule: ValidationRule[Double] = AlwaysValid()
+
+  def observe(choiceMade: AnyRef, observedResult: Double): Unit = {
+    val result = observedResultValidationRule.validated(observedResult).get
+    _lastObservation = Some(new Observation(choiceMade, result, null))
     _lastObservation.foreach(chooser.updateAndChoose(_))
   }
 

@@ -25,10 +25,6 @@ import scala.reflect.classTag
 
 package object dc {
 
-  /** A simple assertion that throws an ExtensionException if the condition is not met */
-  def check(condition: Boolean, message: => String): Unit =
-    if (!condition) throw new ExtensionException(message)
-
   class NumberGetter[T <: Chooser[_, _, _] : ClassTag](get: T => Any) extends Reporter {
     override def getSyntax: Syntax =
       reporterSyntax(right = List(WildcardType), ret = NumberType)
@@ -37,6 +33,7 @@ package object dc {
   }
 
   class NumberSetter[T <: Chooser[_, _, _] : ClassTag](set: (T, Double) => Unit) extends Command {
+    val validationRule: ValidationRule[Double] = AlwaysValid()
     override def getSyntax: Syntax =
       commandSyntax(List(WildcardType, NumberType))
     override def perform(args: Array[Argument], context: Context): Unit =

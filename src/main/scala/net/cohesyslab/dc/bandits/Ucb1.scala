@@ -5,11 +5,11 @@ import java.util.SplittableRandom
 import io.github.carrknight.bandits.UCBBanditAlgorithm
 import net.cohesyslab.dc.ChooserObject
 import net.cohesyslab.dc.IdentityRewardFunction
+import net.cohesyslab.dc.InRange
 import net.cohesyslab.dc.NumberGetter
 import net.cohesyslab.dc.NumberSetter
 import net.cohesyslab.dc.RichArgument
-import net.cohesyslab.dc.RichDouble
-import net.cohesyslab.dc.check
+import net.cohesyslab.dc.ValidationRule
 import org.nlogo.api.Argument
 import org.nlogo.api.Context
 import org.nlogo.api.Reporter
@@ -43,15 +43,8 @@ object Ucb1ChooserPrim extends Reporter {
       DefaultSigma
     )
   ) {
-    override def observe(choiceMade: AnyRef, resultObserved: Double): Unit = {
-      check(
-        resultObserved.inRange(0, 1),
-        "The result observed by a UCB Bandit must be between 0 and 1, inclusively."
-      )
-      super.observe(choiceMade, resultObserved)
-    }
+    override val observedResultValidationRule: ValidationRule[Double] = InRange(0.0, 1.0)
   }
-
 }
 
 object SigmaPrim extends NumberGetter[UCBBanditAlgorithm[_, _, _]](_.getSigma)
