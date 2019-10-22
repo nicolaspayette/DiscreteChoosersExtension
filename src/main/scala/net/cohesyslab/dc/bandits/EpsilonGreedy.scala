@@ -35,11 +35,3 @@ object EpsilonGreedyChooserPrim extends Reporter {
     )
 
 }
-
-object EpsilonPrim extends Getter[EpsilonGreedyBandit[_, _, _]] {
-  override def get(chooser: EpsilonGreedyBandit[_, _, _]): Any = chooser.getEpsilon
-}
-
-object SetEpsilonPrim extends DoubleSetter[EpsilonGreedyBandit[_, _, _]] {
-  override def set(chooser: EpsilonGreedyBandit[_, _, _], value: Double): Unit = chooser.setEpsilon(value)
-}

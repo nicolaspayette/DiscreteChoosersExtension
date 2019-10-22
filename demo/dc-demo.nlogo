@@ -13,7 +13,9 @@ to setup
   landscapes:generate landscape "value"
   ask patches [
     ; give each turtle their own chooser and use patches as arms
-    sprout 1 [ set chooser dc:epsilon-greedy-bandit patches ]
+    sprout 1 [
+      set chooser dc:explore-exploit-imitate-chooser patches [ [ chooser ] of n-of 3 other turtles ]
+    ]
     set pcolor scale-color grey value 0 1
   ]
   reset-ticks
