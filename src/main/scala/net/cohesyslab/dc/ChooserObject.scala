@@ -7,6 +7,7 @@ import io.github.carrknight.imitators.ExploreExploitImitate
 import net.cohesyslab.dc.utils.AlwaysValid
 import net.cohesyslab.dc.utils.ValidationRule
 import org.nlogo.api.Context
+import org.nlogo.api.Dump
 import org.nlogo.api.ExtensionException
 import org.nlogo.api.MersenneTwisterFast
 import org.nlogo.core.ExtensionObject
@@ -53,15 +54,18 @@ class ChooserObject(val chooser: Chooser[AnyRef, Double, Null]) extends Extensio
       }
     }
 
+  def optionValues: Vector[OptionValue] = options.map(optionValue)
+
   def optionValue(option: AnyRef): OptionValue =
     chooser match {
       case bandit: AbstractBanditAlgorithm[AnyRef, _, Null] =>
-        OptionValue(option, bandit.getBanditState.predict(option, null))
+        if (bandit.getOptionsAvailable.containsKey(option))
+          OptionValue(option, bandit.getBanditState.predict(option, null))
+        else
+          throw new ExtensionException(Dump.logoObject(option) + " is not an option of this chooser.")
       case _: ExploreExploitImitate[_, _, _] =>
         throw new ExtensionException("Explore-Exploit-Imitate choosers do not maintain option values.")
     }
-
-  def optionValues: Vector[OptionValue] = options.map(optionValue)
 
   def options: Vector[AnyRef] =
     chooser match {
