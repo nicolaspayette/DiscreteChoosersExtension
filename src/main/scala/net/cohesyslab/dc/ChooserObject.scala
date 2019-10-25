@@ -33,8 +33,8 @@ class ChooserObject(val chooser: Chooser[AnyRef, Double, Null]) extends Extensio
 
   def observe(observedOption: AnyRef, observedResult: Double): Unit = {
     _lastObservation = Some(new Observation(
-      AvailableOption.validated(observedOption).get,
-      observedResultValidationRule.validated(observedResult).get,
+      AvailableOption(observedOption).get,
+      observedResultValidationRule(observedResult).get,
       null
     ))
     _lastObservation.foreach(chooser.updateAndChoose(_))
@@ -62,7 +62,7 @@ class ChooserObject(val chooser: Chooser[AnyRef, Double, Null]) extends Extensio
   def optionValues: Vector[OptionValue] = options.map(optionValue)
 
   def optionValue(option: AnyRef): OptionValue = {
-    val validOption = AvailableOption.validated(option).get
+    val validOption = AvailableOption(option).get
     chooser match {
       case bandit: AbstractBanditAlgorithm[AnyRef, _, Null] =>
         OptionValue(validOption, bandit.getBanditState.predict(validOption, null))

@@ -9,7 +9,7 @@ import scala.util.Try
 
 trait ValidationRule[T] {
   def isValid(value: T): Boolean
-  def validated(value: T): Try[T] =
+  def apply(value: T): Try[T] =
     if (isValid(value)) Success(value)
     else Failure(new ExtensionException(message(value)))
   def message(value: T): String = s"Validation failed for $value."
