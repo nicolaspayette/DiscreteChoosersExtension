@@ -23,6 +23,7 @@ class DiscreteChoosersExtension extends ExtensionClassManager(
   ExpectationsPrim,
   OptionsPrim,
   BestOptionPrim,
+  BestOptionsPrim,
 
   // More specific chooser prims
   ExplorationProbabilityPrim,
