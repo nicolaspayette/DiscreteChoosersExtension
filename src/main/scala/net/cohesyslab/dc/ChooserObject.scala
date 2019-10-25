@@ -25,13 +25,18 @@ class ChooserObject(val chooser: Chooser[AnyRef, Double, Null]) extends Extensio
 
   val observedResultValidationRule: ValidationRule[Double] = AlwaysValid()
   private[this] var _lastObservation: Option[Observation[AnyRef, Double, Null]] = None
+
   override def getExtensionName: String = DiscreteChoosersExtension.name
   override def getNLTypeName: String = chooser.getClass.getSimpleName
   override def recursivelyEqual(obj: AnyRef): Boolean = eq(obj)
   override def dump(readable: Boolean, exporting: Boolean, reference: Boolean): String = hashCode.toHexString
-  def observe(choiceMade: AnyRef, observedResult: Double): Unit = {
-    val result = observedResultValidationRule.validated(observedResult).get
-    _lastObservation = Some(new Observation(choiceMade, result, null))
+
+  def observe(observedOption: AnyRef, observedResult: Double): Unit = {
+    _lastObservation = Some(new Observation(
+      AvailableOption.validated(observedOption).get,
+      observedResultValidationRule.validated(observedResult).get,
+      null
+    ))
     _lastObservation.foreach(chooser.updateAndChoose(_))
   }
 
@@ -56,16 +61,15 @@ class ChooserObject(val chooser: Chooser[AnyRef, Double, Null]) extends Extensio
 
   def optionValues: Vector[OptionValue] = options.map(optionValue)
 
-  def optionValue(option: AnyRef): OptionValue =
+  def optionValue(option: AnyRef): OptionValue = {
+    val validOption = AvailableOption.validated(option).get
     chooser match {
       case bandit: AbstractBanditAlgorithm[AnyRef, _, Null] =>
-        if (bandit.getOptionsAvailable.containsKey(option))
-          OptionValue(option, bandit.getBanditState.predict(option, null))
-        else
-          throw new ExtensionException(Dump.logoObject(option) + " is not an option of this chooser.")
+        OptionValue(validOption, bandit.getBanditState.predict(validOption, null))
       case _: ExploreExploitImitate[_, _, _] =>
         throw new ExtensionException("Explore-Exploit-Imitate choosers do not maintain option values.")
     }
+  }
 
   def options: Vector[AnyRef] =
     chooser match {
@@ -76,5 +80,13 @@ class ChooserObject(val chooser: Chooser[AnyRef, Double, Null]) extends Extensio
     }
 
   def lastObservation: Option[Observation[AnyRef, Double, Null]] = _lastObservation
+
+  object AvailableOption extends ValidationRule[AnyRef] {
+    override def isValid(value: AnyRef): Boolean = chooser match {
+      case bandit: AbstractBanditAlgorithm[AnyRef, _, Null] => bandit.getOptionsAvailable.containsKey(value)
+      case eei: ExploreExploitImitate[AnyRef, _, Null] => eei.getOptionsAvailable.asScala.contains(value)
+    }
+    override def message(value: AnyRef): String = Dump.logoObject(value) + " is not an option of this chooser."
+  }
 
 }
