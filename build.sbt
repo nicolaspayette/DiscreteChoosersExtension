@@ -20,7 +20,7 @@ javaSource in Compile := baseDirectory.value / "discrete-choosers" / "src" / "ma
 
 javaSource in Test := baseDirectory.value / "discrete-choosers" / "src" / "test" / "java"
 
-scalacOptions ++= Seq("-deprecation", "-unchecked", "-Xfatal-warnings", "-encoding", "utf8")
+scalacOptions ++= Seq("-deprecation", "-feature", "-unchecked", "-Xfatal-warnings", "-encoding", "utf8")
 
 unmanagedBase := baseDirectory.value / "discrete-choosers" / "libs" / "rednaxela"
 
