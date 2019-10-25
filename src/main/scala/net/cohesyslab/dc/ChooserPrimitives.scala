@@ -47,10 +47,22 @@ object ObservePrim extends Command {
     args(0).getChooser.observe(args(1).get, args(2).getDoubleValue)
 }
 
-object ExpectationsPrim extends Reporter {
+object ValuePrim extends Reporter {
+  override def getSyntax: Syntax = reporterSyntax(
+    right = List(
+      WildcardType, // the chooser object
+      WildcardType // the option of which we want to know the value
+    ),
+    ret = NumberType // the value of the option
+  )
+  override def report(args: Array[Argument], context: Context): AnyRef =
+    args(0).getChooser.optionValue(args(1).get).value
+}
+
+object OptionValuesPrim extends Reporter {
   override def getSyntax: Syntax = reporterSyntax(right = List(WildcardType), ret = ListType)
   override def report(args: Array[Argument], context: Context): AnyRef =
-    args(0).getChooser.expectations.map(_.toLogoList).toLogoList
+    args(0).getChooser.optionValues.map(_.toLogoList).toLogoList
 }
 
 object OptionsPrim extends Reporter {

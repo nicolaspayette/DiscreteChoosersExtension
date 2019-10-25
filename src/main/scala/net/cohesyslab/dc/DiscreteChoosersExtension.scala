@@ -20,8 +20,9 @@ class DiscreteChoosersExtension extends ExtensionClassManager(
   ObservePrim,
   LastObservationPrim,
   ChoicePrim,
-  ExpectationsPrim,
   OptionsPrim,
+  ValuePrim,
+  OptionValuesPrim,
   BestOptionPrim,
   BestOptionsPrim,
 
