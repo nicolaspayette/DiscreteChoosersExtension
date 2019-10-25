@@ -69,6 +69,8 @@ class ChooserObject(val chooser: Chooser[AnyRef, Double, Null]) extends Extensio
         OptionValue(validOption, bandit.getBanditState.predict(validOption, null))
       case _: ExploreExploitImitate[_, _, _] =>
         throw new ExtensionException("Explore-Exploit-Imitate choosers do not maintain option values.")
+      case _: ParticleSwarm[_, _, _] =>
+        throw new ExtensionException("Particle swarm choosers do not maintain option values.")
     }
   }
 
@@ -78,6 +80,8 @@ class ChooserObject(val chooser: Chooser[AnyRef, Double, Null]) extends Extensio
         bandit.getOptionsAvailable.entrySet.asScala.toVector.sortBy(_.getValue).map(_.getKey)
       case eei: ExploreExploitImitate[AnyRef, _, Null] =>
         eei.getOptionsAvailable.asScala.toVector
+      case pso: ParticleSwarm[AnyRef, _, Null] =>
+        pso.getOptionsAvailable.asScala.toVector // TODO: either get this through reflection or make send PR with getter to Ernesto
     }
 
   def lastObservation: Option[Observation[AnyRef, Double, Null]] = _lastObservation
