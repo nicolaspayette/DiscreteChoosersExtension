@@ -4,6 +4,7 @@ import io.github.carrknight.Chooser
 import io.github.carrknight.Observation
 import io.github.carrknight.bandits.AbstractBanditAlgorithm
 import io.github.carrknight.imitators.ExploreExploitImitate
+import io.github.carrknight.imitators.ParticleSwarm
 import net.cohesyslab.dc.utils.AlwaysValid
 import net.cohesyslab.dc.utils.ValidationRule
 import org.nlogo.api.Context
@@ -85,6 +86,7 @@ class ChooserObject(val chooser: Chooser[AnyRef, Double, Null]) extends Extensio
     override def isValid(value: AnyRef): Boolean = chooser match {
       case bandit: AbstractBanditAlgorithm[AnyRef, _, Null] => bandit.getOptionsAvailable.containsKey(value)
       case eei: ExploreExploitImitate[AnyRef, _, Null] => eei.getOptionsAvailable.asScala.contains(value)
+      case pso: ParticleSwarm[AnyRef, _, Null] => pso.getOptionsAvailable.asScala.exists(_ == value) // TODO: either get this through reflection or make send PR with getter to Ernesto
     }
     override def message(value: AnyRef): String = Dump.logoObject(value) + " is not an option of this chooser."
   }

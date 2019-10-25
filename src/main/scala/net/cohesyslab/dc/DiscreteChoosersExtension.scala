@@ -9,6 +9,7 @@ import net.cohesyslab.dc.bandits.TemperaturePrim
 import net.cohesyslab.dc.bandits.Ucb1ChooserPrim
 import net.cohesyslab.dc.imitators.ExploreExploitImitateChooserPrim
 import net.cohesyslab.dc.imitators.ImitationProbabilityPrim
+import net.cohesyslab.dc.imitators.ParticleSwarmChooserPrim
 import net.cohesyslab.dc.imitators.SetImitationProbabilityPrim
 
 object DiscreteChoosersExtension {
@@ -46,5 +47,8 @@ class DiscreteChoosersExtension extends ExtensionClassManager(
   // Explore-exploit-imitate
   ExploreExploitImitateChooserPrim,
   ImitationProbabilityPrim,
-  SetImitationProbabilityPrim
+  SetImitationProbabilityPrim,
+
+  // Particule Swarm
+  ParticleSwarmChooserPrim
 )
