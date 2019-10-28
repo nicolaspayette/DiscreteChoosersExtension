@@ -3,7 +3,7 @@ package net.cohesyslab.dc.bandits
 import java.util.SplittableRandom
 
 import io.github.carrknight.bandits.SoftmaxBanditAlgorithm
-import net.cohesyslab.dc.WrappedChooser
+import net.cohesyslab.dc.bandits.SoftmaxChooser.DefaultTemperatureValue
 import net.cohesyslab.dc.utils.DoubleSetter
 import net.cohesyslab.dc.utils.Getter
 import net.cohesyslab.dc.utils.IdentityRewardFunction
@@ -19,30 +19,40 @@ import org.nlogo.core.Syntax.reporterSyntax
 
 object SoftmaxChooserPrim extends Reporter {
 
-  val DefaultTemperatureValue = 1.0
-
   override def getSyntax: Syntax = reporterSyntax(
     right = List(ListType | AgentsetType), // the choices
     ret = WildcardType
   )
 
   override def report(args: Array[Argument], context: Context): AnyRef =
-    new WrappedChooser(
-      new SoftmaxBanditAlgorithm(
-        IdentityRewardFunction,
-        args(0).getOptionsArray(context.getRNG),
-        Double.MaxValue,
-        new SplittableRandom(context.getRNG.nextLong()),
-        DefaultTemperatureValue,
-        x => x
-      )
+    new SoftmaxChooser(
+      args(0).getOptionsArray(context.getRNG),
+      context.getRNG.nextLong(),
     )
 }
 
-object TemperaturePrim extends Getter[SoftmaxBanditAlgorithm[_, _, _]] {
-  override def get(chooser: SoftmaxBanditAlgorithm[_, _, _]): Any = chooser.getTemperature
+object SoftmaxChooser {
+  val DefaultTemperatureValue = 1.0
 }
 
-object SetTemperaturePrim extends DoubleSetter[SoftmaxBanditAlgorithm[_, _, _]] {
-  override def set(chooser: SoftmaxBanditAlgorithm[_, _, _], value: Double): Unit = chooser.setTemperature(value)
+class SoftmaxChooser(
+  options: Array[AnyRef],
+  randomSeed: Long
+) extends AbstractBanditChooser(
+  new SoftmaxBanditAlgorithm(
+    IdentityRewardFunction,
+    options,
+    Double.MaxValue,
+    new SplittableRandom(randomSeed),
+    DefaultTemperatureValue,
+    x => x
+  )
+)
+
+object TemperaturePrim extends Getter[SoftmaxChooser] {
+  override def get(chooser: SoftmaxChooser): Any = chooser.delegate.getTemperature
+}
+
+object SetTemperaturePrim extends DoubleSetter[SoftmaxChooser] {
+  override def set(chooser: SoftmaxChooser, value: Double): Unit = chooser.delegate.setTemperature(value)
 }

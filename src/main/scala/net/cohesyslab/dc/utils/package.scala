@@ -1,6 +1,5 @@
 package net.cohesyslab.dc
 
-import io.github.carrknight.Chooser
 import io.github.carrknight.utils.RewardFunction
 import org.nlogo.agent.AgentSet
 import org.nlogo.api.Agent
@@ -31,10 +30,6 @@ package object utils {
   }
 
   implicit class RichArgument(arg: Argument) {
-
-    def getChooser: WrappedChooser = arg.get.as[WrappedChooser]
-
-    def getChooserAs[T <: Chooser[_, _, _] : ClassTag]: T = arg.get.as[WrappedChooser].chooser.as[T]
 
     def getOptionsArray(rng: MersenneTwisterFast): Array[AnyRef] = arg.get match {
       case agentSet: AgentSet => agentSet.toOptionsArray(rng)

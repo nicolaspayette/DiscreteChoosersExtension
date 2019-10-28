@@ -3,7 +3,7 @@ package net.cohesyslab.dc.bandits
 import java.util.SplittableRandom
 
 import io.github.carrknight.bandits.UCBBanditAlgorithm
-import net.cohesyslab.dc.WrappedChooser
+import net.cohesyslab.dc.bandits.Ucb1Chooser.DefaultSigma
 import net.cohesyslab.dc.utils.DoubleSetter
 import net.cohesyslab.dc.utils.Getter
 import net.cohesyslab.dc.utils.IdentityRewardFunction
@@ -21,37 +21,42 @@ import org.nlogo.core.Syntax.reporterSyntax
 
 object Ucb1ChooserPrim extends Reporter {
 
-  val DefaultSigma = 1.0
   override def getSyntax: Syntax = reporterSyntax(
     right = List(ListType | AgentsetType), // the choices
     ret = WildcardType
   )
   override def report(args: Array[Argument], context: Context): AnyRef =
-    new UCBBanditWrappedChooser(
+    new Ucb1Chooser(
       args(0).getOptionsArray(context.getRNG),
-      new SplittableRandom(context.getRNG.nextLong())
+      context.getRNG.nextLong()
     )
-
-  class UCBBanditWrappedChooser(options: Array[AnyRef], rng: SplittableRandom) extends WrappedChooser(
-    new UCBBanditAlgorithm(
-      IdentityRewardFunction,
-      options,
-      0,
-      rng,
-      0.0,
-      1.0,
-      DefaultSigma
-    )
-  ) {
-    override val observedResultValidationRule: ValidationRule[Double] = InRange(0, 1)
-  }
-
 }
 
-object SigmaPrim extends Getter[UCBBanditAlgorithm[_, _, _]] {
-  override def get(chooser: UCBBanditAlgorithm[_, _, _]): Any = chooser.getSigma
+object Ucb1Chooser {
+  val DefaultSigma = 1.0
 }
 
-object SetSigmaPrim extends DoubleSetter[UCBBanditAlgorithm[_, _, _]] {
-  override def set(chooser: UCBBanditAlgorithm[_, _, _], value: Double): Unit = chooser.setSigma(value)
+class Ucb1Chooser(
+  options: Array[AnyRef],
+  randomSeed: Long
+) extends AbstractBanditChooser(
+  new UCBBanditAlgorithm(
+    IdentityRewardFunction,
+    options,
+    0,
+    new SplittableRandom(randomSeed),
+    0.0,
+    1.0,
+    DefaultSigma
+  )
+) {
+  override val observedResultValidationRule: ValidationRule[Double] = InRange(0, 1)
+}
+
+object SigmaPrim extends Getter[Ucb1Chooser] {
+  override def get(chooser: Ucb1Chooser): Any = chooser.delegate.getSigma
+}
+
+object SetSigmaPrim extends DoubleSetter[Ucb1Chooser] {
+  override def set(chooser: Ucb1Chooser, value: Double): Unit = chooser.delegate.setSigma(value)
 }

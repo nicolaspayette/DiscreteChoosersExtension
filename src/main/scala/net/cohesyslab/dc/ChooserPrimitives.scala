@@ -1,13 +1,12 @@
 package net.cohesyslab.dc
 
-import io.github.carrknight.Chooser
-import io.github.carrknight.bandits.EpsilonGreedyBandit
-import io.github.carrknight.imitators.ExploreExploitImitate
+import net.cohesyslab.dc.bandits.EpsilonGreedyChooser
+import net.cohesyslab.dc.imitators.ExploreExploitImitateChooser
 import net.cohesyslab.dc.imitators.StochasticObservationPredicate
 import net.cohesyslab.dc.utils.DoubleSetter
 import net.cohesyslab.dc.utils.Getter
 import net.cohesyslab.dc.utils.InRange
-import net.cohesyslab.dc.utils.RichArgument
+import net.cohesyslab.dc.utils.RichAnyRef
 import net.cohesyslab.dc.utils.ValidationRule
 import org.nlogo.api.Argument
 import org.nlogo.api.Command
@@ -32,7 +31,7 @@ object ChoicePrim extends Reporter {
     ret = WildcardType // the choice made
   )
   override def report(args: Array[Argument], context: Context): AnyRef =
-    args(0).getChooser.choice(context).toLogoObject
+    args(0).get.as[Chooser].choice(context).toLogoObject
 }
 
 object ObservePrim extends Command {
@@ -44,7 +43,7 @@ object ObservePrim extends Command {
     )
   )
   override def perform(args: Array[Argument], context: Context): Unit =
-    args(0).getChooser.observe(args(1).get, args(2).getDoubleValue)
+    args(0).get.as[Chooser].observe(args(1).get, args(2).getDoubleValue)
 }
 
 object ValuePrim extends Reporter {
@@ -56,48 +55,48 @@ object ValuePrim extends Reporter {
     ret = NumberType // the value of the option
   )
   override def report(args: Array[Argument], context: Context): AnyRef =
-    args(0).getChooser.optionValue(args(1).get).value
+    args(0).get.as[Chooser].optionValue(args(1).get).value
 }
 
 object OptionValuesPrim extends Reporter {
   override def getSyntax: Syntax = reporterSyntax(right = List(WildcardType), ret = ListType)
   override def report(args: Array[Argument], context: Context): AnyRef =
-    args(0).getChooser.optionValues.map(_.toLogoList).toLogoList
+    args(0).get.as[Chooser].optionValues.map(_.toLogoList).toLogoList
 }
 
 object OptionsPrim extends Reporter {
   override def getSyntax: Syntax = reporterSyntax(right = List(WildcardType), ret = ListType)
   override def report(args: Array[Argument], context: Context): AnyRef =
-    args(0).getChooser.options.toLogoList
+    args(0).get.as[Chooser].options.toLogoList
 }
 
 object BestOptionsPrim extends Reporter {
   override def getSyntax: Syntax = reporterSyntax(right = List(WildcardType), ret = WildcardType)
   override def report(args: Array[Argument], context: Context): AnyRef =
-    args(0).getChooser.bestOptions.toLogoList
+    args(0).get.as[Chooser].bestOptions.toLogoList
 }
 
 object BestOptionPrim extends Reporter {
   override def getSyntax: Syntax = reporterSyntax(right = List(WildcardType), ret = WildcardType)
   override def report(args: Array[Argument], context: Context): AnyRef =
-    args(0).getChooser.bestOption(context.getRNG).toLogoObject
+    args(0).get.as[Chooser].bestOption(context.getRNG).toLogoObject
 }
 
 object LastObservationPrim extends Reporter {
   override def getSyntax: Syntax = reporterSyntax(right = List(WildcardType), ret = ListType)
   override def report(args: Array[Argument], context: Context): AnyRef =
-    args(0).getChooser.lastObservation
+    args(0).get.as[Chooser].lastObservation
       .map(obs => Seq(obs.getChoiceMade, obs.getResultObserved).toLogoList)
       .getOrElse(Nobody)
 }
 
-object ExplorationProbabilityPrim extends Getter[Chooser[_, _, _]] {
-  override def get(chooser: Chooser[_, _, _]): Any =
+object ExplorationProbabilityPrim extends Getter[Chooser] {
+  override def get(chooser: Chooser): Any =
     chooser match {
-      case chooser: EpsilonGreedyBandit[_, _, _] =>
-        chooser.getEpsilon
-      case chooser: ExploreExploitImitate[_, _, _] =>
-        chooser.getExplorationRule match {
+      case chooser: EpsilonGreedyChooser =>
+        chooser.delegate.getEpsilon
+      case chooser: ExploreExploitImitateChooser =>
+        chooser.delegate.getExplorationRule match {
           case rule: StochasticObservationPredicate[_, _, _] => rule.explorationProbability
           case _ => throw new ExtensionException("Exploration rule of " + chooser + " is not stochastic.")
         }
@@ -105,14 +104,14 @@ object ExplorationProbabilityPrim extends Getter[Chooser[_, _, _]] {
     }
 }
 
-object SetExplorationProbabilityPrim extends DoubleSetter[Chooser[AnyRef, Double, Null]] {
+object SetExplorationProbabilityPrim extends DoubleSetter[Chooser] {
   override val validationRule: ValidationRule[Double] = InRange(0, 1)
-  override def set(chooser: Chooser[AnyRef, Double, Null], value: Double): Unit =
+  override def set(chooser: Chooser, value: Double): Unit =
     chooser match {
-      case chooser: EpsilonGreedyBandit[AnyRef, Double, Null] =>
-        chooser.setEpsilon(value)
-      case chooser: ExploreExploitImitate[AnyRef, Double, Null] =>
-        chooser.setExplorationRule(new StochasticObservationPredicate[AnyRef, Double, Null](value))
+      case chooser: EpsilonGreedyChooser =>
+        chooser.delegate.setEpsilon(value)
+      case chooser: ExploreExploitImitateChooser =>
+        chooser.delegate.setExplorationRule(new StochasticObservationPredicate[AnyRef, Double, Null](value))
       case _ => throw new ExtensionException("Chooser " + chooser + " does not have an exploration probability.")
     }
 }
