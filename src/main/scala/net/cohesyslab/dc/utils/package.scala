@@ -8,6 +8,7 @@ import org.nlogo.api.Argument
 import org.nlogo.api.Dump
 import org.nlogo.api.ExtensionException
 import org.nlogo.api.MersenneTwisterFast
+import org.nlogo.api.ScalaConversions._
 import org.nlogo.core.LogoList
 
 import scala.collection.mutable
@@ -44,7 +45,7 @@ package object utils {
 
   implicit class RichAgentSet(agentSet: AgentSet) {
     def toOptionsArray[T >: Agent <: AnyRef : ClassTag](rng: MersenneTwisterFast): Array[T] = {
-      if (agentSet.isEmpty) throw new ExtensionException("A chooser cannot be created with an empty set of options.")
+      if (agentSet.isEmpty) throw new ExtensionException("A chooser cannot be created with an empty agentset of options.")
       val builder = new mutable.ArrayBuilder.ofRef[T]()
       val iterator = agentSet.shufflerator(rng)
       while (iterator.hasNext) builder += iterator.next()
@@ -54,7 +55,15 @@ package object utils {
 
   implicit class RichLogoList(logoList: LogoList) {
     def toOptionsArray: Array[AnyRef] = {
-      if (logoList.isEmpty) throw new ExtensionException("A chooser cannot be created with an empty list of options.")
+      if (logoList.isEmpty)
+        throw new ExtensionException("A chooser cannot be created with an empty list of options.")
+      if (logoList.distinct.size != logoList.size) {
+        val duplicates = logoList.groupBy(identity).filter(_._2.size > 1).keys.toSeq
+        throw new ExtensionException(
+          "The list of options should only contain unique items but the following duplicates were found: " +
+            Dump.logoObject(logoList.filter(duplicates.contains).toLogoList)
+        )
+      }
       logoList.toArray
     }
   }
