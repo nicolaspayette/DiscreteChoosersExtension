@@ -32,9 +32,9 @@ package object utils {
 
   implicit class RichArgument(arg: Argument) {
 
-    def getChooser: ChooserObject = arg.get.as[ChooserObject]
+    def getChooser: WrappedChooser = arg.get.as[WrappedChooser]
 
-    def getChooserAs[T <: Chooser[_, _, _] : ClassTag]: T = arg.get.as[ChooserObject].chooser.as[T]
+    def getChooserAs[T <: Chooser[_, _, _] : ClassTag]: T = arg.get.as[WrappedChooser].chooser.as[T]
 
     def getOptionsArray(rng: MersenneTwisterFast): Array[AnyRef] = arg.get match {
       case agentSet: AgentSet => agentSet.toOptionsArray(rng)

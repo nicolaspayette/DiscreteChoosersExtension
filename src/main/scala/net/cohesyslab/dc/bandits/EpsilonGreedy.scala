@@ -1,7 +1,7 @@
 package net.cohesyslab.dc.bandits
 
 import io.github.carrknight.bandits.EpsilonGreedyBandit
-import net.cohesyslab.dc.ChooserObject
+import net.cohesyslab.dc.WrappedChooser
 import net.cohesyslab.dc.utils.DoubleSetter
 import net.cohesyslab.dc.utils.Getter
 import net.cohesyslab.dc.utils.IdentityRewardFunction
@@ -25,7 +25,7 @@ object EpsilonGreedyChooserPrim extends Reporter {
   )
 
   override def report(args: Array[Argument], context: Context): AnyRef =
-    new ChooserObject(
+    new WrappedChooser(
       new EpsilonGreedyBandit(
         IdentityRewardFunction,
         args(0).getOptionsArray(context.getRNG),

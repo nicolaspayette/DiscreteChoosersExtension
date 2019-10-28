@@ -34,7 +34,7 @@ object ParticleSwarmChooserPrim extends Reporter {
   )
   override def report(args: Array[Argument], context: Context): AnyRef = {
     def extractor(f: Patch => Double): FeatureExtractor[AnyRef, Null] = (o, _) => f(o.asInstanceOf[Patch])
-    new ImitatorChooserObject(
+    new ImitatorWrappedChooser(
       new ParticleSwarm[AnyRef, Double, Null](
         Array(extractor(_.pxcor), extractor(_.pycor)),
         (pos: Array[Double]) => context.world.getPatchAt(pos(0), pos(1)),

@@ -20,7 +20,7 @@ case class OptionValue(option: AnyRef, value: java.lang.Double) {
   def toLogoList = LogoList(option, value)
 }
 
-class ChooserObject(val chooser: Chooser[AnyRef, Double, Null]) extends ExtensionObject {
+class WrappedChooser(val chooser: Chooser[AnyRef, Double, Null]) extends ExtensionObject {
 
   // TODO: the methods with pattern matching on chooser type could probably be handled by type classes
 

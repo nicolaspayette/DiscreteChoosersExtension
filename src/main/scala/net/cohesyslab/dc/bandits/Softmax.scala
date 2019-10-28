@@ -3,7 +3,7 @@ package net.cohesyslab.dc.bandits
 import java.util.SplittableRandom
 
 import io.github.carrknight.bandits.SoftmaxBanditAlgorithm
-import net.cohesyslab.dc.ChooserObject
+import net.cohesyslab.dc.WrappedChooser
 import net.cohesyslab.dc.utils.DoubleSetter
 import net.cohesyslab.dc.utils.Getter
 import net.cohesyslab.dc.utils.IdentityRewardFunction
@@ -27,7 +27,7 @@ object SoftmaxChooserPrim extends Reporter {
   )
 
   override def report(args: Array[Argument], context: Context): AnyRef =
-    new ChooserObject(
+    new WrappedChooser(
       new SoftmaxBanditAlgorithm(
         IdentityRewardFunction,
         args(0).getOptionsArray(context.getRNG),
