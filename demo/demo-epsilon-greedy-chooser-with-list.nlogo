@@ -1,47 +1,38 @@
-extensions [ dc landscapes ]
-
-patches-own [ value ]
-
-turtles-own [
-  chooser
-  num-choices-made
-  total-payoff
-]
+extensions [ dc ]
+globals [ arms chooser ]
 
 to setup
   clear-all
-  landscapes:generate landscape "value"
-  ask patches [
-    ; give each turtle their own chooser and use patches as arms
-    sprout 1 [
-      set chooser dc:explore-exploit-imitate-chooser patches [ [ chooser ] of n-of 3 other turtles ]
-      ;set chooser dc:particle-swarm-chooser patches [ [ chooser ] of n-of 3 other turtles ]
-      ;set chooser dc:epsilon-greedy-chooser patches
-    ]
-    set pcolor scale-color grey value 0 1
-  ]
-  reset-ticks
+  set arms map [ n -> precision n 1 ] (range 0 1 0.1)
+  print word "Arms: " arms
+  set chooser dc:epsilon-greedy-chooser arms
+  print-chooser-info
+end
+
+to print-chooser-info
+  print word "Chooser object:          " chooser
+  print word "Exploration probability: " dc:exploration-probability chooser
+  print word "Options (same as arms):  " dc:options chooser
+  print word "Option values:           " dc:option-values chooser
+  print word "Best options:            " dc:best-options chooser
+  print word "Best option:             " dc:best-option chooser
+  print word "Value of 0.9 option:     " dc:value chooser 0.9
 end
 
 to go
-  ask turtles [
-    move-to dc:choice chooser
-    set num-choices-made num-choices-made + 1
-    let payoff reward [ value ] of patch-here
-    set total-payoff total-payoff + payoff
-    dc:observe chooser patch-here payoff
+  repeat 100 [
+    let arm dc:choice chooser
+    let payoff ifelse-value random-float 1 < arm [ 1 ] [ 0 ]
+    print (word "chose arm " arm ", got payoff " payoff)
+    dc:observe chooser arm payoff
   ]
-  tick
-end
-
-to-report reward [ p ]
-  report ifelse-value (random-float 1 < p) [ 1 ] [ 0 ]
+  print-chooser-info
 end
 @#$#@#$#@
 GRAPHICS-WINDOW
-425
+210
 10
-862
+647
 448
 -1
 -1
@@ -59,90 +50,11 @@ GRAPHICS-WINDOW
 16
 -16
 16
-1
-1
+0
+0
 1
 ticks
 30.0
-
-BUTTON
-10
-65
-83
-98
-NIL
-setup
-NIL
-1
-T
-OBSERVER
-NIL
-NIL
-NIL
-NIL
-1
-
-BUTTON
-90
-65
-153
-98
-NIL
-go
-T
-1
-T
-OBSERVER
-NIL
-NIL
-NIL
-NIL
-0
-
-BUTTON
-10
-105
-377
-138
-NIL
-ask turtles [ move-to dc:best-option chooser ]
-NIL
-1
-T
-OBSERVER
-NIL
-NIL
-NIL
-NIL
-1
-
-CHOOSER
-10
-10
-414
-55
-landscape
-landscape
-"3 POT HOLES" "ACKLEY'S FUNCTION" "ACKLEY'S PATH FUNCTION 10" "AXIS PARALLEL HYPER-ELLIPSOID FUNCTION" "BOHACHEVSKY'S FUNCTION" "BRANINS'S RCOS FUNCTION" "CPF1" "CPF2" "DE JONG F1" "EASOM'S FUNCTION" "EUCLIDEAN" "EXP" "F3" "F4 (PSHUBERT1)" "F5 (PSHUBERT2)" "F6 (QUARTIC)" "F7 (SHUBERT FUNCTION)" "G3" "GENERALIZED GRIEWANK FUNCTION" "GENERALIZED HIMMELBLAU'S FUNCTION" "GENERALIZED PENALIZED FUNCTION 1" "GENERALIZED PENALIZED FUNCTION 2" "GENERALIZED RASTRIGIN'S FUNCTION" "GENERALIZED ROSENBROCK'S FUNCTION" "GENERALIZED SCHWEFELS PROBLEM 2.26" "GOLDSTEIN-PRICE'S FUNCTION" "GRIEWANGK'S FUNCTION 8" "HANSENS FUNCTION" "HORN'S FMMEASY" "HORNS 5 PEAKS (MODIFIED)" "LANGERMANN'S FUNCTION 11 (M=4)" "LANGERMANN'S FUNCTION 11 (M=7)" "M5 (HIMMELBLAU'S FUNCTION)" "M6 (SHEKEL'S FOXHOLES)" "MICHALEWICZ'S FUNCTION 12" "MOVED AXIS PARALLEL HYPER-ELLIPSOID FUNCTION" "MULTI FUNCTION" "PEAKS" "QUARTIC FUNCTION (NOISE)" "RASTRIGIN'S FUNCTION 6" "RIPPLES" "ROOTS" "ROSENBROCK'S VALLEY (DE JONG F2)" "ROTATED HYPER-ELLIPSOID FUNCTION" "SCHAFFER'S FUNCTION" "SCHWEFEL'S FUNCTION 7" "SCHWEFEL'S PROBLEM 1.2" "SCHWEFEL'S PROBLEM 2.21" "SCHWEFEL'S PROBLEM 2.22" "SHUBERT FUNCTION" "SIX-HUMP CAMEL BACK FUNCTION" "SPHERE" "SQUASHED FROG FUNCTION (TIMBO)" "STEP FUNCTION" "SUM OF DIFFERENT POWER FUNCTION" "TEST FUNCTION F1" "TEST FUNCTION F2 (ROSENBROCK'S FUNCTION)" "TEST FUNCTION F3" "TEST FUNCTION F4 (QUARTIC FUNCTION)" "TEST FUNCTION F5 (SHEKEL'S FUNCTION)"
-11
-
-PLOT
-10
-155
-415
-380
-Average payoff over time
-ticks
-payoff
-0.0
-10.0
-0.0
-1.0
-true
-false
-"" ""
-PENS
-"default" 1.0 0 -16777216 true "" "if ticks > 0 [\n  plotxy ticks mean [ total-payoff / num-choices-made ] of turtles\n]"
 
 @#$#@#$#@
 ## WHAT IS IT?
@@ -503,5 +415,5 @@ true
 Line -7500403 true 150 150 90 180
 Line -7500403 true 150 150 210 180
 @#$#@#$#@
-1
+0
 @#$#@#$#@

@@ -1,51 +1,74 @@
-extensions [ dc landscapes ]
-
-patches-own [ value ]
-
+extensions [ dc ]
+globals [ regions ]
 turtles-own [
-  chooser
-  num-choices-made
-  total-payoff
+  region-chooser
+  patch-choosers
 ]
+patches-own [ value ]
 
 to setup
   clear-all
-  landscapes:generate landscape "value"
-  ask patches [
-    ; give each turtle their own chooser and use patches as arms
-    sprout 1 [
-      set chooser dc:explore-exploit-imitate-chooser patches [ [ chooser ] of n-of 3 other turtles ]
-      ;set chooser dc:particle-swarm-chooser patches [ [ chooser ] of n-of 3 other turtles ]
-      ;set chooser dc:epsilon-greedy-chooser patches
+  resize-world 0 9 0 9
+  set-patch-size 30
+
+  set regions (list
+    patches with [ pxcor <  5 and pycor <  5 ]
+    patches with [ pxcor <  5 and pycor >= 5 ]
+    patches with [ pxcor >= 5 and pycor <  5 ]
+    patches with [ pxcor >= 5 and pycor >= 5 ]
+  )
+
+  (foreach regions n-of 4 base-colors [ [region-patches c] ->
+    ask region-patches [
+      set value (pxcor + pycor) / (max-pxcor + max-pycor)
+      set pcolor scale-color c value 0 1
     ]
-    set pcolor scale-color grey value 0 1
+  ])
+
+  create-turtles 1 [
+    set region-chooser dc:epsilon-greedy-chooser regions
+    set patch-choosers map [ region-patches -> dc:softmax-chooser region-patches ] regions
+    print-chooser-info
   ]
-  reset-ticks
 end
+
+to print-chooser-info
+  print dc:option-values region-chooser
+  print dc:best-option region-chooser
+  foreach patch-choosers [ patch-chooser ->
+    print dc:option-values patch-chooser
+    print dc:best-option patch-chooser
+  ]
+end
+
 
 to go
-  ask turtles [
-    move-to dc:choice chooser
-    set num-choices-made num-choices-made + 1
-    let payoff reward [ value ] of patch-here
-    set total-payoff total-payoff + payoff
-    dc:observe chooser patch-here payoff
+  repeat 100 [
+    ask turtles [
+      let chosen-region dc:choice region-chooser
+      let patch-chooser item (position chosen-region regions) patch-choosers
+      move-to dc:choice patch-chooser
+      let payoff ifelse-value random-float 1 < value [ 1 ] [ 0 ]
+      dc:observe region-chooser chosen-region payoff
+      dc:observe patch-chooser patch-here payoff
+    ]
   ]
-  tick
-end
-
-to-report reward [ p ]
-  report ifelse-value (random-float 1 < p) [ 1 ] [ 0 ]
+  ask turtles [
+    let best-region dc:best-option region-chooser
+    let patch-chooser item (position best-region regions) patch-choosers
+    move-to dc:best-option patch-chooser
+    print-chooser-info
+  ]
 end
 @#$#@#$#@
 GRAPHICS-WINDOW
-425
+210
 10
-862
-448
+518
+319
 -1
 -1
-13.0
+30.0
 1
 10
 1
@@ -55,94 +78,15 @@ GRAPHICS-WINDOW
 1
 1
 1
--16
-16
--16
-16
-1
-1
+0
+9
+0
+9
+0
+0
 1
 ticks
 30.0
-
-BUTTON
-10
-65
-83
-98
-NIL
-setup
-NIL
-1
-T
-OBSERVER
-NIL
-NIL
-NIL
-NIL
-1
-
-BUTTON
-90
-65
-153
-98
-NIL
-go
-T
-1
-T
-OBSERVER
-NIL
-NIL
-NIL
-NIL
-0
-
-BUTTON
-10
-105
-377
-138
-NIL
-ask turtles [ move-to dc:best-option chooser ]
-NIL
-1
-T
-OBSERVER
-NIL
-NIL
-NIL
-NIL
-1
-
-CHOOSER
-10
-10
-414
-55
-landscape
-landscape
-"3 POT HOLES" "ACKLEY'S FUNCTION" "ACKLEY'S PATH FUNCTION 10" "AXIS PARALLEL HYPER-ELLIPSOID FUNCTION" "BOHACHEVSKY'S FUNCTION" "BRANINS'S RCOS FUNCTION" "CPF1" "CPF2" "DE JONG F1" "EASOM'S FUNCTION" "EUCLIDEAN" "EXP" "F3" "F4 (PSHUBERT1)" "F5 (PSHUBERT2)" "F6 (QUARTIC)" "F7 (SHUBERT FUNCTION)" "G3" "GENERALIZED GRIEWANK FUNCTION" "GENERALIZED HIMMELBLAU'S FUNCTION" "GENERALIZED PENALIZED FUNCTION 1" "GENERALIZED PENALIZED FUNCTION 2" "GENERALIZED RASTRIGIN'S FUNCTION" "GENERALIZED ROSENBROCK'S FUNCTION" "GENERALIZED SCHWEFELS PROBLEM 2.26" "GOLDSTEIN-PRICE'S FUNCTION" "GRIEWANGK'S FUNCTION 8" "HANSENS FUNCTION" "HORN'S FMMEASY" "HORNS 5 PEAKS (MODIFIED)" "LANGERMANN'S FUNCTION 11 (M=4)" "LANGERMANN'S FUNCTION 11 (M=7)" "M5 (HIMMELBLAU'S FUNCTION)" "M6 (SHEKEL'S FOXHOLES)" "MICHALEWICZ'S FUNCTION 12" "MOVED AXIS PARALLEL HYPER-ELLIPSOID FUNCTION" "MULTI FUNCTION" "PEAKS" "QUARTIC FUNCTION (NOISE)" "RASTRIGIN'S FUNCTION 6" "RIPPLES" "ROOTS" "ROSENBROCK'S VALLEY (DE JONG F2)" "ROTATED HYPER-ELLIPSOID FUNCTION" "SCHAFFER'S FUNCTION" "SCHWEFEL'S FUNCTION 7" "SCHWEFEL'S PROBLEM 1.2" "SCHWEFEL'S PROBLEM 2.21" "SCHWEFEL'S PROBLEM 2.22" "SHUBERT FUNCTION" "SIX-HUMP CAMEL BACK FUNCTION" "SPHERE" "SQUASHED FROG FUNCTION (TIMBO)" "STEP FUNCTION" "SUM OF DIFFERENT POWER FUNCTION" "TEST FUNCTION F1" "TEST FUNCTION F2 (ROSENBROCK'S FUNCTION)" "TEST FUNCTION F3" "TEST FUNCTION F4 (QUARTIC FUNCTION)" "TEST FUNCTION F5 (SHEKEL'S FUNCTION)"
-11
-
-PLOT
-10
-155
-415
-380
-Average payoff over time
-ticks
-payoff
-0.0
-10.0
-0.0
-1.0
-true
-false
-"" ""
-PENS
-"default" 1.0 0 -16777216 true "" "if ticks > 0 [\n  plotxy ticks mean [ total-payoff / num-choices-made ] of turtles\n]"
 
 @#$#@#$#@
 ## WHAT IS IT?
@@ -503,5 +447,5 @@ true
 Line -7500403 true 150 150 90 180
 Line -7500403 true 150 150 210 180
 @#$#@#$#@
-1
+0
 @#$#@#$#@
