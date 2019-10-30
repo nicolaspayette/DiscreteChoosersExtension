@@ -1,5 +1,5 @@
 extensions [ dc ]
-globals [ regions ]
+
 turtles-own [
   region-chooser
   patch-choosers
@@ -10,53 +10,55 @@ to setup
   clear-all
   resize-world 0 9 0 9
   set-patch-size 30
-
-  set regions (list
+  let regions (list
     patches with [ pxcor <  5 and pycor <  5 ]
     patches with [ pxcor <  5 and pycor >= 5 ]
     patches with [ pxcor >= 5 and pycor <  5 ]
     patches with [ pxcor >= 5 and pycor >= 5 ]
   )
-
-  (foreach regions n-of 4 base-colors [ [region-patches c] ->
-    ask region-patches [
+  foreach range length regions [ i ->
+    ask item i regions [
+      set plabel i
       set value (pxcor + pycor) / (max-pxcor + max-pycor)
-      set pcolor scale-color c value 0 1
+      set pcolor scale-color item i base-colors value 0 1
     ]
-  ])
-
+  ]
   create-turtles 1 [
-    set region-chooser dc:epsilon-greedy-chooser regions
+    set shape "target" set color lime
+    set region-chooser dc:epsilon-greedy-chooser range length regions
     set patch-choosers map [ region-patches -> dc:softmax-chooser region-patches ] regions
     print-chooser-info
   ]
+  reset-ticks
 end
 
 to print-chooser-info
-  print dc:option-values region-chooser
-  print dc:best-option region-chooser
-  foreach patch-choosers [ patch-chooser ->
-    print dc:option-values patch-chooser
-    print dc:best-option patch-chooser
+  print region-chooser
+  print word "Region values:            " dc:option-values region-chooser
+  print word "Best region:              " dc:best-option region-chooser
+  foreach range length patch-choosers [ i ->
+    let chooser item i patch-choosers
+    print (word "Patch values in region " i ": " dc:option-values chooser)
+    let best-patch dc:best-option chooser
+    print (word "Best patch in region " i ":   " best-patch ", value: " dc:value chooser best-patch)
   ]
 end
 
-
 to go
-  repeat 100 [
-    ask turtles [
-      let chosen-region dc:choice region-chooser
-      let patch-chooser item (position chosen-region regions) patch-choosers
-      move-to dc:choice patch-chooser
-      let payoff ifelse-value random-float 1 < value [ 1 ] [ 0 ]
-      dc:observe region-chooser chosen-region payoff
-      dc:observe patch-chooser patch-here payoff
-    ]
-  ]
   ask turtles [
-    let best-region dc:best-option region-chooser
-    let patch-chooser item (position best-region regions) patch-choosers
-    move-to dc:best-option patch-chooser
+    let chosen-region dc:choice region-chooser
+    let patch-chooser item chosen-region patch-choosers
+    move-to dc:choice patch-chooser
+    let payoff ifelse-value random-float 1 < value [ 1 ] [ 0 ]
+    dc:observe region-chooser chosen-region payoff
+    dc:observe patch-chooser patch-here payoff
+  ]
+  tick
+end
+
+to move-to-best-patch
+    ask turtles [
+    move-to dc:best-option (item (dc:best-option region-chooser) patch-choosers)
     print-chooser-info
   ]
 end
@@ -87,6 +89,57 @@ GRAPHICS-WINDOW
 1
 ticks
 30.0
+
+BUTTON
+10
+10
+85
+43
+NIL
+setup
+NIL
+1
+T
+OBSERVER
+NIL
+NIL
+NIL
+NIL
+1
+
+BUTTON
+90
+10
+165
+43
+NIL
+go
+T
+1
+T
+OBSERVER
+NIL
+NIL
+NIL
+NIL
+0
+
+BUTTON
+10
+50
+165
+83
+NIL
+move-to-best-patch
+NIL
+1
+T
+OBSERVER
+NIL
+NIL
+NIL
+NIL
+1
 
 @#$#@#$#@
 ## WHAT IS IT?
@@ -447,5 +500,5 @@ true
 Line -7500403 true 150 150 90 180
 Line -7500403 true 150 150 210 180
 @#$#@#$#@
-0
+1
 @#$#@#$#@

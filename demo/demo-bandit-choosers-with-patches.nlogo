@@ -14,6 +14,7 @@ to setup
   create-turtles 1 [ set chooser dc:softmax-chooser patches ]
   create-turtles 1 [ set chooser dc:ucb1-chooser patches ]
   ask turtles [ print-chooser-info ]
+  reset-ticks
 end
 
 to print-chooser-info
@@ -26,13 +27,15 @@ to print-chooser-info
 end
 
 to go
-  repeat 100 [
-    ask turtles [
-      move-to dc:choice chooser
-      let payoff ifelse-value random-float 1 < value [ 1 ] [ 0 ]
-      dc:observe chooser patch-here payoff
-    ]
+  ask turtles [
+    move-to dc:choice chooser
+    let payoff ifelse-value random-float 1 < value [ 1 ] [ 0 ]
+    dc:observe chooser patch-here payoff
   ]
+  tick
+end
+
+to move-to-best-patch
   ask turtles [
     move-to dc:best-option chooser
     print-chooser-info
@@ -65,6 +68,57 @@ GRAPHICS-WINDOW
 1
 ticks
 30.0
+
+BUTTON
+5
+10
+78
+43
+NIL
+setup
+NIL
+1
+T
+OBSERVER
+NIL
+NIL
+NIL
+NIL
+1
+
+BUTTON
+80
+10
+145
+43
+NIL
+go
+T
+1
+T
+OBSERVER
+NIL
+NIL
+NIL
+NIL
+0
+
+BUTTON
+5
+45
+145
+78
+NIL
+move-to-best-patch
+NIL
+1
+T
+OBSERVER
+NIL
+NIL
+NIL
+NIL
+1
 
 @#$#@#$#@
 ## WHAT IS IT?
@@ -425,5 +479,5 @@ true
 Line -7500403 true 150 150 90 180
 Line -7500403 true 150 150 210 180
 @#$#@#$#@
-0
+1
 @#$#@#$#@
