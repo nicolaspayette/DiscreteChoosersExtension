@@ -46,7 +46,7 @@ object ParticleSwarmChooserPrim extends Reporter {
     new ParticleSwarmChooser(
       args(0).getOptionsArray(context.getRNG),
       context.getRNG.nextLong(),
-      (pos: Array[Double]) => context.world.getPatchAt(pos(0), pos(1)),
+      (pos: Array[Double]) => context.world.getPatchAt(pos(0), pos(1)), // TODO: handle case where we're outside the world
       args(1).getReporter
     )
   }
@@ -84,8 +84,6 @@ class ParticleSwarmChooser(
   ),
   observedChoosersReporter
 ) {
-  def extractor(f: Patch => Double): FeatureExtractor[AnyRef, Null] = (o, _) => f(o.asInstanceOf[Patch])
-
   def options: Vector[AnyRef] =
     delegate.getOptionsAvailable.asScala.toVector // TODO: either get this through reflection or make send PR with getter to Ernesto
 
