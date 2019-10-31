@@ -20,13 +20,11 @@ to print-chooser-info
 end
 
 to go
-  repeat 100 [
     let arm dc:choice chooser
     let payoff ifelse-value random-float 1 < arm [ 1 ] [ 0 ]
     print (word "chose arm " arm ", got payoff " payoff)
     dc:observe chooser arm payoff
-  ]
-  print-chooser-info
+
 end
 @#$#@#$#@
 GRAPHICS-WINDOW
@@ -55,6 +53,57 @@ GRAPHICS-WINDOW
 1
 ticks
 30.0
+
+BUTTON
+10
+10
+83
+43
+NIL
+setup
+NIL
+1
+T
+OBSERVER
+NIL
+NIL
+NIL
+NIL
+1
+
+BUTTON
+90
+10
+153
+43
+NIL
+go
+NIL
+1
+T
+OBSERVER
+NIL
+NIL
+NIL
+NIL
+1
+
+BUTTON
+10
+50
+155
+83
+NIL
+print-chooser-info
+NIL
+1
+T
+OBSERVER
+NIL
+NIL
+NIL
+NIL
+1
 
 @#$#@#$#@
 ## WHAT IS IT?
@@ -415,5 +464,5 @@ true
 Line -7500403 true 150 150 90 180
 Line -7500403 true 150 150 210 180
 @#$#@#$#@
-0
+1
 @#$#@#$#@
