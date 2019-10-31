@@ -7,6 +7,7 @@ to setup
   print word "Arms: " arms
   set chooser dc:epsilon-greedy-chooser arms
   print-chooser-info
+  reset-ticks
 end
 
 to print-chooser-info
@@ -20,21 +21,20 @@ to print-chooser-info
 end
 
 to go
-    let arm dc:choice chooser
-    let payoff ifelse-value random-float 1 < arm [ 1 ] [ 0 ]
-    print (word "chose arm " arm ", got payoff " payoff)
-    dc:observe chooser arm payoff
-
+  let arm dc:choice chooser
+  let payoff ifelse-value random-float 1 < arm [ 1 ] [ 0 ]
+  print (word "chose arm " arm ", got payoff " payoff)
+  dc:observe chooser arm payoff
 end
 @#$#@#$#@
 GRAPHICS-WINDOW
-210
+250
 10
-647
-448
+291
+52
 -1
 -1
-13.0
+1.0
 1
 10
 1
@@ -86,12 +86,12 @@ NIL
 NIL
 NIL
 NIL
-1
+0
 
 BUTTON
 10
 50
-155
+225
 83
 NIL
 print-chooser-info
@@ -104,6 +104,23 @@ NIL
 NIL
 NIL
 1
+
+BUTTON
+160
+10
+223
+43
+NIL
+go
+T
+1
+T
+OBSERVER
+NIL
+NIL
+NIL
+NIL
+0
 
 @#$#@#$#@
 ## WHAT IS IT?
