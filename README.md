@@ -8,6 +8,10 @@ This extension is still in the early stages of development. Not all algorithms a
 
 You can download the extension from the [releases page](https://github.com/nicolaspayette/DiscreteChoosersExtension/releases). Just unzip `dc.zip` under your NetLogo `extensions/` folder. Once it's a bit more stable, I'll make it available through the NetLogo Extensions Manager.
 
+The extension requires NetLogo >= 6.0.0.
+
+Rudimentary demo models are available in the [`demo/`](https://github.com/nicolaspayette/DiscreteChoosersExtension/tree/master/demo) folder.
+
 # Available primitives
 
 (Documentation coming soon.)
