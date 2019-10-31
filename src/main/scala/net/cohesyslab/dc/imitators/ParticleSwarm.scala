@@ -84,11 +84,17 @@ class ParticleSwarmChooser(
   ),
   observedChoosersReporter
 ) {
-  def options: Vector[AnyRef] =
-    delegate.getOptionsAvailable.asScala.toVector // TODO: either get this through reflection or make send PR with getter to Ernesto
 
-  def isValidOption(option: AnyRef): Boolean =
-    delegate.getOptionsAvailable.asScala.exists(_ == option) // TODO: either get this through reflection or make send PR with getter to Ernesto
+  def options: Vector[AnyRef] = getOptionsAvailable.toVector
+
+  def isValidOption(option: AnyRef): Boolean = getOptionsAvailable.exists(_ == option)
+
+  private def getOptionsAvailable: Iterable[AnyRef] = {
+    // TODO: send PR with getter to Ernesto instead of using reflection
+    val optionsAvailableField = delegate.getClass.getDeclaredField("optionsAvailable")
+    optionsAvailableField.setAccessible(true)
+    optionsAvailableField.get(delegate).asInstanceOf[java.lang.Iterable[AnyRef]].asScala
+  }
 
   def optionValue(option: AnyRef): OptionValue =
     throw new ExtensionException("Particle swarm choosers do not maintain option values.")
