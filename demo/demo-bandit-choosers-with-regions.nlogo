@@ -25,8 +25,8 @@ to setup
   ]
   create-turtles 1 [
     set shape "target" set color lime
-    set region-chooser dc:epsilon-greedy-chooser range length regions
-    set patch-choosers map [ region-patches -> dc:softmax-chooser region-patches ] regions
+    set patch-choosers map [ region-patches -> dc:epsilon-greedy-chooser region-patches ] regions
+    set region-chooser dc:epsilon-greedy-chooser patch-choosers
     print-chooser-info
   ]
   reset-ticks
@@ -46,11 +46,10 @@ end
 
 to go
   ask turtles [
-    let chosen-region dc:choice region-chooser
-    let patch-chooser item chosen-region patch-choosers
+    let patch-chooser dc:choice region-chooser
     move-to dc:choice patch-chooser
     let payoff ifelse-value random-float 1 < value [ 1 ] [ 0 ]
-    dc:observe region-chooser chosen-region payoff
+    dc:observe region-chooser patch-chooser payoff
     dc:observe patch-chooser patch-here payoff
   ]
   tick
@@ -58,7 +57,7 @@ end
 
 to move-to-best-patch
     ask turtles [
-    move-to dc:best-option (item (dc:best-option region-chooser) patch-choosers)
+    move-to dc:best-option dc:best-option region-chooser
     print-chooser-info
   ]
 end
