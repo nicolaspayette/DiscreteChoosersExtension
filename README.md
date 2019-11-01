@@ -20,14 +20,14 @@ Rudimentary demo models are available in the [`demo/`](https://github.com/nicola
 
 ### Bandits
 
-* `dc:explore-exploit-imitate-chooser`
+* `dc:epsilon-greedy-chooser`
 * `dc:softmax-chooser`
 * `dc:ucb1-chooser`
 
 ### Imitators
 
+* `dc:explore-exploit-imitate-chooser`
 * `dc:particle-swarm-chooser-prim`
-* `dc:epsilon-greedy-chooser`
 
 ## Chooser operation
 
