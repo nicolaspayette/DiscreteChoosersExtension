@@ -27,7 +27,7 @@ Rudimentary demo models are available in the [`demo/`](https://github.com/nicola
 ### Imitators
 
 * `dc:explore-exploit-imitate-chooser`
-* `dc:particle-swarm-chooser-prim`
+* `dc:particle-swarm-chooser`
 
 ## Chooser operation
 
