@@ -11,12 +11,21 @@ import net.cohesyslab.dc.imitators.ExploreExploitImitateChooserPrim
 import net.cohesyslab.dc.imitators.ImitationProbabilityPrim
 import net.cohesyslab.dc.imitators.ParticleSwarmChooserPrim
 import net.cohesyslab.dc.imitators.SetImitationProbabilityPrim
+import org.nlogo.api.Argument
+import org.nlogo.api.Context
+import org.nlogo.api.Reporter
+import org.nlogo.core.Syntax
+import org.nlogo.core.Syntax.StringType
+import org.nlogo.core.Syntax.reporterSyntax
 
 object DiscreteChoosersExtension {
   val name = "dc"
 }
 
 class DiscreteChoosersExtension extends ExtensionClassManager(
+
+  AboutPrim,
+
   // Common to all choosers:
   ObservePrim,
   LastObservationPrim,
@@ -52,3 +61,9 @@ class DiscreteChoosersExtension extends ExtensionClassManager(
   // Particule Swarm
   ParticleSwarmChooserPrim
 )
+
+object AboutPrim extends Reporter {
+  override def getSyntax: Syntax = reporterSyntax(ret = StringType)
+  override def report(args: Array[Argument], context: Context): AnyRef =
+    "This is the Discrete Choosers Extension. See https://github.com/nicolaspayette/DiscreteChoosersExtension."
+}
