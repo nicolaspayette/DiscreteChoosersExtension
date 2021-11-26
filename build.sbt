@@ -25,7 +25,6 @@ scalacOptions ++= Seq("-deprecation", "-feature", "-unchecked", "-Xfatal-warning
 unmanagedBase := baseDirectory.value / "discrete-choosers" / "libs" / "rednaxela"
 
 libraryDependencies ++= Seq(
-  "com.intellij" % "annotations" % "12.0",
   "com.google.guava" % "guava" % "23.0",
   "org.mockito" % "mockito-all" % "1.9.5" % "test",
   "junit" % "junit" % "4.12" % "test"
