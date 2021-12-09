@@ -10,7 +10,7 @@ netLogoVersion := "6.2.1"
 
 netLogoTarget := org.nlogo.build.NetLogoExtension.directoryTarget(baseDirectory.value / "dc")
 
-version := "0.0.0-SNAPSHOT"
+version := "0.0.1"
 
 scalaVersion := "2.12.8"
 
